@@ -8,21 +8,21 @@
 
 {% if S_EDIT %}
 
-	<a href="{{ U_ACTION }}" class="button2" style="float: right;">&laquo; {{ lang('BACK') }}</a>
+	<a href="{{ U_ACTION }}" class="button2 acp-menu-back-btn">&laquo; {{ lang('BACK') }}</a>
 	<h2>{{ lang('MENU_EDIT_ITEM') }}</h2>
 
 	<form id="acp_menu_form" method="post" action="{{ U_ACTION }}&amp;action=save">
 		<fieldset>
 			<dl>
-				<dt><label for="item_name">{{ lang('MENU_ITEM_NAME') }}</label><br /><span>{{ lang('MENU_ITEM_NAME_EXPLAIN') }}</span></dt>
-				<dd><input type="text" id="item_name" name="item_name" value="{{ ITEM_NAME }}" maxlength="255" required /></dd>
+				<dt><label for="item_name">{{ lang('MENU_ITEM_NAME') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_NAME_EXPLAIN') }}</span></dt>
+				<dd><input type="text" id="item_name" name="item_name" value="{{ ITEM_NAME|e('html_attr') }}" maxlength="255" required /></dd>
 			</dl>
 			<dl>
-				<dt><label for="item_url">{{ lang('MENU_ITEM_URL') }}</label><br /><span>{{ lang('MENU_ITEM_URL_EXPLAIN') }}</span></dt>
-				<dd><input type="text" id="item_url" name="item_url" value="{{ ITEM_URL }}" maxlength="255" placeholder="index.php" /></dd>
+				<dt><label for="item_url">{{ lang('MENU_ITEM_URL') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_URL_EXPLAIN') }}</span></dt>
+				<dd><input type="text" id="item_url" name="item_url" value="{{ ITEM_URL|e('html_attr') }}" maxlength="255" placeholder="{{ lang('MENU_ITEM_URL_PLACEHOLDER')|e('html_attr') }}" /></dd>
 			</dl>
 			<dl>
-				<dt><label for="parent_id">{{ lang('MENU_ITEM_PARENT') }}</label><br /><span>{{ lang('MENU_ITEM_PARENT_EXPLAIN') }}</span></dt>
+				<dt><label for="parent_id">{{ lang('MENU_ITEM_PARENT') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_PARENT_EXPLAIN') }}</span></dt>
 				<dd>
 					<select id="parent_id" name="parent_id">
 						<option value="0"{% if PARENT_ID == 0 %} selected="selected"{% endif %}>{{ lang('MENU_ROOT') }}</option>
@@ -33,11 +33,11 @@
 				</dd>
 			</dl>
 			<dl>
-				<dt><label for="item_icon">{{ lang('MENU_ITEM_ICON') }}</label><br /><span>{{ lang('MENU_ITEM_ICON_EXPLAIN') }}</span></dt>
-				<dd><input type="text" id="item_icon" name="item_icon" value="{{ ITEM_ICON }}" maxlength="100" placeholder="fa-home" /></dd>
+				<dt><label for="item_icon">{{ lang('MENU_ITEM_ICON') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_ICON_EXPLAIN')|raw }}</span></dt>
+				<dd><input type="text" id="item_icon" name="item_icon" value="{{ ITEM_ICON|e('html_attr') }}" maxlength="100" placeholder="{{ lang('MENU_ITEM_ICON_PLACEHOLDER')|e('html_attr') }}" /></dd>
 			</dl>
 			<dl>
-				<dt><label for="item_target">{{ lang('MENU_ITEM_TARGET') }}</label></dt>
+				<dt><label for="item_target">{{ lang('MENU_ITEM_TARGET') }}{{ lang('COLON') }}</label></dt>
 				<dd>
 					<select id="item_target" name="item_target">
 						<option value="_self"{% if ITEM_TARGET == '_self' %} selected="selected"{% endif %}>{{ lang('MENU_TARGET_SELF') }}</option>
@@ -46,18 +46,18 @@
 				</dd>
 			</dl>
 			<dl>
-				<dt><label for="item_enabled">{{ lang('MENU_ITEM_ENABLED') }}</label></dt>
+				<dt><label for="item_enabled">{{ lang('MENU_ITEM_ENABLED') }}{{ lang('COLON') }}</label></dt>
 				<dd>
 					<label><input type="radio" class="radio" name="item_enabled" value="1"{% if ITEM_ENABLED %} checked="checked"{% endif %} /> {{ lang('YES') }}</label>
 					<label><input type="radio" class="radio" name="item_enabled" value="0"{% if not ITEM_ENABLED %} checked="checked"{% endif %} /> {{ lang('NO') }}</label>
 				</dd>
 			</dl>
+		</fieldset>
 
-			<p class="submit-buttons">
-				<input type="hidden" name="item_id" value="{{ ITEM_ID }}" />
-				<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}" />&nbsp;
-				<a class="button2" href="{{ U_ACTION }}">{{ lang('BACK') }}</a>
-			</p>
+		<fieldset class="submit-buttons">
+			<input type="hidden" name="item_id" value="{{ ITEM_ID }}" />
+			<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT')|e('html_attr') }}" />&nbsp;
+			<a class="button2" href="{{ U_ACTION }}">{{ lang('BACK') }}</a>
 			{{ S_FORM_TOKEN }}
 		</fieldset>
 	</form>
@@ -68,16 +68,16 @@
 		<fieldset>
 			<legend>{{ lang('MENU_GLOBAL_SETTINGS') }}</legend>
 			<dl>
-				<dt><label for="vinny_menu_enable">{{ lang('MENU_ENABLE') }}</label><br /><span>{{ lang('MENU_ENABLE_EXPLAIN') }}</span></dt>
+				<dt><label for="vinny_menu_enable">{{ lang('MENU_ENABLE') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ENABLE_EXPLAIN') }}</span></dt>
 				<dd>
 					<label><input type="radio" class="radio" name="vinny_menu_enable" value="1"{% if S_MENU_ENABLE %} checked="checked"{% endif %} /> {{ lang('YES') }}</label>
 					<label><input type="radio" class="radio" name="vinny_menu_enable" value="0"{% if not S_MENU_ENABLE %} checked="checked"{% endif %} /> {{ lang('NO') }}</label>
 				</dd>
 			</dl>
+		</fieldset>
 
-			<p class="submit-buttons">
-				<input class="button1" type="submit" id="submit_settings" name="submit_settings" value="{{ lang('SUBMIT') }}" />
-			</p>
+		<fieldset class="submit-buttons">
+			<input class="button1" type="submit" id="submit_settings" name="submit_settings" value="{{ lang('SUBMIT')|e('html_attr') }}" />
 			{{ S_FORM_TOKEN }}
 		</fieldset>
 	</form>
@@ -89,15 +89,15 @@
 	<form id="acp_menu_form" method="post" action="{{ U_ACTION }}&amp;action=save">
 		<fieldset>
 			<dl>
-				<dt><label for="item_name">{{ lang('MENU_ITEM_NAME') }}</label><br /><span>{{ lang('MENU_ITEM_NAME_EXPLAIN') }}</span></dt>
+				<dt><label for="item_name">{{ lang('MENU_ITEM_NAME') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_NAME_EXPLAIN') }}</span></dt>
 				<dd><input type="text" id="item_name" name="item_name" value="" maxlength="255" required /></dd>
 			</dl>
 			<dl>
-				<dt><label for="item_url">{{ lang('MENU_ITEM_URL') }}</label><br /><span>{{ lang('MENU_ITEM_URL_EXPLAIN') }}</span></dt>
-				<dd><input type="text" id="item_url" name="item_url" value="" maxlength="255" placeholder="index.php" /></dd>
+				<dt><label for="item_url">{{ lang('MENU_ITEM_URL') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_URL_EXPLAIN') }}</span></dt>
+				<dd><input type="text" id="item_url" name="item_url" value="" maxlength="255" placeholder="{{ lang('MENU_ITEM_URL_PLACEHOLDER')|e('html_attr') }}" /></dd>
 			</dl>
 			<dl>
-				<dt><label for="parent_id">{{ lang('MENU_ITEM_PARENT') }}</label><br /><span>{{ lang('MENU_ITEM_PARENT_EXPLAIN') }}</span></dt>
+				<dt><label for="parent_id">{{ lang('MENU_ITEM_PARENT') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_PARENT_EXPLAIN') }}</span></dt>
 				<dd>
 					<select id="parent_id" name="parent_id">
 						<option value="0" selected="selected">{{ lang('MENU_ROOT') }}</option>
@@ -108,11 +108,11 @@
 				</dd>
 			</dl>
 			<dl>
-				<dt><label for="item_icon">{{ lang('MENU_ITEM_ICON') }}</label><br /><span>{{ lang('MENU_ITEM_ICON_EXPLAIN') }}</span></dt>
-				<dd><input type="text" id="item_icon" name="item_icon" value="" maxlength="100" placeholder="fa-home" /></dd>
+				<dt><label for="item_icon">{{ lang('MENU_ITEM_ICON') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_ICON_EXPLAIN')|raw }}</span></dt>
+				<dd><input type="text" id="item_icon" name="item_icon" value="" maxlength="100" placeholder="{{ lang('MENU_ITEM_ICON_PLACEHOLDER')|e('html_attr') }}" /></dd>
 			</dl>
 			<dl>
-				<dt><label for="item_target">{{ lang('MENU_ITEM_TARGET') }}</label></dt>
+				<dt><label for="item_target">{{ lang('MENU_ITEM_TARGET') }}{{ lang('COLON') }}</label></dt>
 				<dd>
 					<select id="item_target" name="item_target">
 						<option value="_self" selected="selected">{{ lang('MENU_TARGET_SELF') }}</option>
@@ -121,17 +121,17 @@
 				</dd>
 			</dl>
 			<dl>
-				<dt><label for="item_enabled">{{ lang('MENU_ITEM_ENABLED') }}</label></dt>
+				<dt><label for="item_enabled">{{ lang('MENU_ITEM_ENABLED') }}{{ lang('COLON') }}</label></dt>
 				<dd>
 					<label><input type="radio" class="radio" name="item_enabled" value="1" checked="checked" /> {{ lang('YES') }}</label>
 					<label><input type="radio" class="radio" name="item_enabled" value="0" /> {{ lang('NO') }}</label>
 				</dd>
 			</dl>
+		</fieldset>
 
-			<p class="submit-buttons">
-				<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}" />&nbsp;
-				<input class="button2" type="reset" id="reset" name="reset" value="{{ lang('RESET') }}" />
-			</p>
+		<fieldset class="submit-buttons">
+			<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT')|e('html_attr') }}" />&nbsp;
+			<input class="button2" type="reset" id="reset" name="reset" value="{{ lang('RESET')|e('html_attr') }}" />
 			{{ S_FORM_TOKEN }}
 		</fieldset>
 	</form>
@@ -148,17 +148,17 @@
 				<li data-id="{{ item.ID }}">
 					<div class="nested-item-row">
 						<div class="nested-item-info">
-							<span class="drag-handle" title="{{ lang('DRAG_TO_REORDER') }}"><i class="icon fa fa-arrows fa-fw"></i></span>
+							<span class="drag-handle" title="{{ lang('DRAG_TO_REORDER')|e('html_attr') }}"><i class="icon fa fa-arrows fa-fw"></i></span>
 							{% if item.ICON %}<i class="icon fa {{ item.ICON }} fa-fw"></i>{% endif %}
 							<strong>{{ item.NAME }}</strong>
-							<small style="color: #666; margin-left: 8px;"><a href="{{ item.URL }}" target="_blank" rel="noopener">{{ item.URL }}</a></small>
+							<small class="nested-item-url"><a href="{{ item.URL }}" target="_blank" rel="noopener">{{ item.URL }}</a></small>
 						</div>
 						<div class="nested-item-actions">
 							<a href="{{ item.U_TOGGLE }}" data-ajax="menu_toggle_enabled">
 								{% if item.IS_ENABLED %}
-									<i class="icon acp-icon fa-check-circle fa-fw" style="color: #228822;" aria-hidden="true" title="{{ lang('YES') }}"></i>
+									<i class="icon acp-icon status-enabled fa-check-circle fa-fw" aria-hidden="true" title="{{ lang('DISABLE')|e('html_attr') }}"></i>
 								{% else %}
-									<i class="icon acp-icon fa-times-circle fa-fw" style="color: #bcbcbc;" aria-hidden="true" title="{{ lang('NO') }}"></i>
+									<i class="icon acp-icon status-disabled fa-times-circle fa-fw" aria-hidden="true" title="{{ lang('ENABLE')|e('html_attr') }}"></i>
 								{% endif %}
 							</a>
 							<a href="{{ item.U_EDIT }}">{{ ICON_EDIT|raw }}</a>
@@ -170,17 +170,17 @@
 							<li data-id="{{ child.ID }}">
 								<div class="nested-item-row">
 									<div class="nested-item-info">
-										<span class="drag-handle" title="{{ lang('DRAG_TO_REORDER') }}"><i class="icon fa fa-arrows fa-fw"></i></span>
+										<span class="drag-handle" title="{{ lang('DRAG_TO_REORDER')|e('html_attr') }}"><i class="icon fa fa-arrows fa-fw"></i></span>
 										{% if child.ICON %}<i class="icon fa {{ child.ICON }} fa-fw"></i>{% endif %}
 										<strong>{{ child.NAME }}</strong>
-										<small style="color: #666; margin-left: 8px;"><a href="{{ child.URL }}" target="_blank" rel="noopener">{{ child.URL }}</a></small>
+										<small class="nested-item-url"><a href="{{ child.URL }}" target="_blank" rel="noopener">{{ child.URL }}</a></small>
 									</div>
 									<div class="nested-item-actions">
 										<a href="{{ child.U_TOGGLE }}" data-ajax="menu_toggle_enabled">
 											{% if child.IS_ENABLED %}
-												<i class="icon acp-icon fa-check-circle fa-fw" style="color: #228822;" aria-hidden="true" title="{{ lang('YES') }}"></i>
+												<i class="icon acp-icon status-enabled fa-check-circle fa-fw" aria-hidden="true" title="{{ lang('DISABLE')|e('html_attr') }}"></i>
 											{% else %}
-												<i class="icon acp-icon fa-times-circle fa-fw" style="color: #bcbcbc;" aria-hidden="true" title="{{ lang('NO') }}"></i>
+												<i class="icon acp-icon status-disabled fa-times-circle fa-fw" aria-hidden="true" title="{{ lang('ENABLE')|e('html_attr') }}"></i>
 											{% endif %}
 										</a>
 										<a href="{{ child.U_EDIT }}">{{ ICON_EDIT|raw }}</a>
@@ -192,17 +192,17 @@
 										<li data-id="{{ subchild.ID }}">
 											<div class="nested-item-row">
 												<div class="nested-item-info">
-													<span class="drag-handle" title="{{ lang('DRAG_TO_REORDER') }}"><i class="icon fa fa-arrows fa-fw"></i></span>
+													<span class="drag-handle" title="{{ lang('DRAG_TO_REORDER')|e('html_attr') }}"><i class="icon fa fa-arrows fa-fw"></i></span>
 													{% if subchild.ICON %}<i class="icon fa {{ subchild.ICON }} fa-fw"></i>{% endif %}
 													<strong>{{ subchild.NAME }}</strong>
-													<small style="color: #666; margin-left: 8px;"><a href="{{ subchild.URL }}" target="_blank" rel="noopener">{{ subchild.URL }}</a></small>
+													<small class="nested-item-url"><a href="{{ subchild.URL }}" target="_blank" rel="noopener">{{ subchild.URL }}</a></small>
 												</div>
 												<div class="nested-item-actions">
 													<a href="{{ subchild.U_TOGGLE }}" data-ajax="menu_toggle_enabled">
 														{% if subchild.IS_ENABLED %}
-															<i class="icon acp-icon fa-check-circle fa-fw" style="color: #228822;" aria-hidden="true" title="{{ lang('YES') }}"></i>
+															<i class="icon acp-icon status-enabled fa-check-circle fa-fw" aria-hidden="true" title="{{ lang('DISABLE')|e('html_attr') }}"></i>
 														{% else %}
-															<i class="icon acp-icon fa-times-circle fa-fw" style="color: #bcbcbc;" aria-hidden="true" title="{{ lang('NO') }}"></i>
+															<i class="icon acp-icon status-disabled fa-times-circle fa-fw" aria-hidden="true" title="{{ lang('ENABLE')|e('html_attr') }}"></i>
 														{% endif %}
 													</a>
 													<a href="{{ subchild.U_EDIT }}">{{ ICON_EDIT|raw }}</a>
@@ -218,12 +218,12 @@
 					</ol>
 				</li>
 			{% else %}
-				<li style="text-align: center; padding: 20px; color: #888;">{{ lang('MENU_NO_ITEMS') }}</li>
+				<li class="nested-item-empty">{{ lang('MENU_NO_ITEMS') }}</li>
 			{% endfor %}
 		</ol>
 	</div>
 
-	<div id="vinny-menu-data" style="display: none;" data-reorder-url="{{ U_REORDER_AJAX|e('html_attr') }}"></div>
+	<div id="vinny-menu-data" data-reorder-url="{{ U_REORDER_AJAX|e('html_attr') }}"></div>
 
 	{% INCLUDEJS '@vinny_menu/js/Sortable.min.js' %}
 	{% INCLUDEJS '@vinny_menu/js/acp_menu.js' %}

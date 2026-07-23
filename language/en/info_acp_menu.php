@@ -19,10 +19,7 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, [
-	'ACP_HEADER_MENU_TITLE'		=> 'Header Menu',
-	'ACP_MENU_BUILDER_TITLE'	=> 'Header Menu',
-	'ACP_HEADER_MENU_MANAGE'	=> 'Manage Header Menu',
-	'ACP_MENU_BUILDER_MANAGE'	=> 'Manage Header Menu',
-	'ACP_HEADER_MENU_EXPLAIN'	=> 'Create, reorder, and manage custom navigation menu items.',
-	'ACP_MENU_BUILDER_EXPLAIN'	=> 'Create, reorder, and manage custom navigation menu items.',
+	'ACP_HEADER_MENU_TITLE'   => 'Header Menu',
+	'ACP_HEADER_MENU_MANAGE'  => 'Manage Header Menu',
+	'ACP_HEADER_MENU_EXPLAIN' => 'Create, reorder, and manage custom navigation menu items.',
 ]);

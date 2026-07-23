@@ -19,6 +19,7 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, [
+	'HEADER_MENU_TOGGLE'                    => 'Menu',
 	'MENU_GLOBAL_SETTINGS'                  => 'Header Menu Settings',
 	'MENU_ENABLE'                           => 'Enable Header Menu',
 	'MENU_ENABLE_EXPLAIN'                   => 'Master toggle to display or hide the header menu on your board.',
@@ -30,11 +31,13 @@ $lang = array_merge($lang, [
 	'MENU_ITEM_NAME_EXPLAIN'                => 'The label displayed in the navigation bar.',
 	'MENU_ITEM_NAME_REQUIRED'               => 'Link Name is required.',
 	'MENU_ITEM_URL'                         => 'Target URL',
-	'MENU_ITEM_URL_EXPLAIN'                 => 'Internal path (e.g. index.php, viewforum.php?f=2) or full URL (https://example.com).',
+	'MENU_ITEM_URL_EXPLAIN'                 => 'Internal board path (e.g. index.php, viewforum.php?f=2), full URL (e.g. https://example.com), or # for dropdown header items without a direct link.',
+	'MENU_ITEM_URL_PLACEHOLDER'             => 'index.php',
 	'MENU_ITEM_PARENT'                      => 'Parent Item',
 	'MENU_ITEM_PARENT_EXPLAIN'              => 'Select a parent item to create a sub-menu dropdown.',
 	'MENU_ITEM_ICON'                        => 'FontAwesome Icon',
-	'MENU_ITEM_ICON_EXPLAIN'                => 'Icon class (e.g. fa-home, fa-star, fa-envelope). Optional.',
+	'MENU_ITEM_ICON_EXPLAIN'                => 'Icon class (e.g. fa-home, fa-star, fa-envelope). See <a href="https://fontawesome.com/v4/icons/" target="_blank" rel="noopener">available icons</a>. Optional.',
+	'MENU_ITEM_ICON_PLACEHOLDER'            => 'fa-home',
 	'MENU_ITEM_TARGET'                      => 'Target Window',
 	'MENU_TARGET_SELF'                      => 'Same Window (_self)',
 	'MENU_TARGET_BLANK'                     => 'New Window (_blank)',
@@ -48,4 +51,5 @@ $lang = array_merge($lang, [
 	'MENU_NO_ITEMS'                         => 'No menu items have been added yet.',
 	'MENU_REORDER_EXPLAIN'                  => 'Drag and drop items using the handle icon (<i class="icon fa fa-arrows fa-fw"></i>) to reorder or change hierarchy between parents and submenus.',
 	'DRAG_TO_REORDER'                       => 'Drag to reorder or change level',
+	'MENU_NO_ORDER_DATA'                    => 'No valid order data received.',
 ]);

@@ -21,14 +21,19 @@ class ajax_controller
 	/** @var \vinny\menu\service\menu_operator */
 	protected $menu_operator;
 
+	/** @var \phpbb\language\language */
+	protected $language;
+
 	/**
 	 * Constructor
 	 *
 	 * @param \vinny\menu\service\menu_operator $menu_operator
+	 * @param \phpbb\language\language          $language
 	 */
-	public function __construct(\vinny\menu\service\menu_operator $menu_operator)
+	public function __construct(\vinny\menu\service\menu_operator $menu_operator, \phpbb\language\language $language)
 	{
 		$this->menu_operator = $menu_operator;
+		$this->language = $language;
 	}
 
 	/**
@@ -39,6 +44,8 @@ class ajax_controller
 	 */
 	public function reorder(Request $request)
 	{
+		$this->language->add_lang('common', 'vinny/menu');
+
 		// Check raw JSON payload
 		$content = $request->getContent();
 		if (!empty($content))
@@ -76,6 +83,6 @@ class ajax_controller
 			}
 		}
 
-		return new JsonResponse(['success' => false, 'error' => 'No valid order data received'], 400);
+		return new JsonResponse(['success' => false, 'error' => $this->language->lang('MENU_NO_ORDER_DATA')], 400);
 	}
 }

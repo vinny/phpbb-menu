@@ -19,6 +19,7 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, [
+	'HEADER_MENU_TOGGLE'                    => 'Menu',
 	'MENU_GLOBAL_SETTINGS'                  => 'Configurações do Header Menu',
 	'MENU_ENABLE'                           => 'Ativar Header Menu',
 	'MENU_ENABLE_EXPLAIN'                   => 'Opção geral para ativar ou desativar o menu no fórum.',
@@ -30,11 +31,13 @@ $lang = array_merge($lang, [
 	'MENU_ITEM_NAME_EXPLAIN'                => 'O rótulo exibido na barra de navegação.',
 	'MENU_ITEM_NAME_REQUIRED'               => 'O Nome do Link é obrigatório.',
 	'MENU_ITEM_URL'                         => 'URL de Destino',
-	'MENU_ITEM_URL_EXPLAIN'                 => 'Caminho interno (ex: index.php, viewforum.php?f=2) ou URL completa (https://exemplo.com).',
+	'MENU_ITEM_URL_EXPLAIN'                 => 'Caminho interno do fórum (ex: index.php, viewforum.php?f=2), URL completa (ex: https://exemplo.com) ou # para itens de menu suspenso sem link direto.',
+	'MENU_ITEM_URL_PLACEHOLDER'             => 'index.php',
 	'MENU_ITEM_PARENT'                      => 'Item Pai',
 	'MENU_ITEM_PARENT_EXPLAIN'              => 'Selecione um item pai para criar um menu suspenso (dropdown).',
 	'MENU_ITEM_ICON'                        => 'Ícone FontAwesome',
-	'MENU_ITEM_ICON_EXPLAIN'                => 'Classe de ícone (ex: fa-home, fa-star, fa-envelope). Opcional.',
+	'MENU_ITEM_ICON_EXPLAIN'                => 'Classe de ícone (ex: fa-home, fa-star, fa-envelope). Veja os <a href="https://fontawesome.com/v4/icons/" target="_blank" rel="noopener">ícones disponíveis</a>. Opcional.',
+	'MENU_ITEM_ICON_PLACEHOLDER'            => 'fa-home',
 	'MENU_ITEM_TARGET'                      => 'Janela de Destino',
 	'MENU_TARGET_SELF'                      => 'Mesma Janela (_self)',
 	'MENU_TARGET_BLANK'                     => 'Nova Janela (_blank)',
@@ -48,4 +51,5 @@ $lang = array_merge($lang, [
 	'MENU_NO_ITEMS'                         => 'Nenhum item de menu foi adicionado ainda.',
 	'MENU_REORDER_EXPLAIN'                  => 'Arraste e solte os itens usando o ícone de alça (<i class="icon fa fa-arrows fa-fw"></i>) para reordenar ou alterar a hierarquia entre pai e submenus.',
 	'DRAG_TO_REORDER'                       => 'Arraste para reordenar ou alterar nível',
+	'MENU_NO_ORDER_DATA'                    => 'Nenhum dado de ordenação válido foi recebido.',
 ]);

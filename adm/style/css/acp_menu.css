@@ -1,3 +1,7 @@
+.acp-menu-back-btn {
+	float: right;
+}
+
 .drag-handle {
 	cursor: grab;
 	color: #888;
@@ -59,8 +63,44 @@
 	gap: 10px;
 }
 
+.nested-item-url {
+	color: #666;
+	margin-left: 8px;
+}
+
 .nested-item-actions {
 	display: flex;
 	align-items: center;
 	gap: 12px;
+}
+
+.nested-item-actions a,
+.nested-item-actions a:hover,
+.nested-item-actions a:focus,
+.nested-item-actions a:active {
+	text-decoration: none !important;
+}
+
+.nested-item-actions a i,
+.nested-item-actions a:hover i {
+	text-decoration: none !important;
+}
+
+.acp-icon.status-enabled {
+	color: #228822;
+}
+
+.acp-icon.status-disabled {
+	color: #bcbcbc;
+}
+
+.nested-item-empty {
+	text-align: center;
+	padding: 20px;
+	color: #888;
+	list-style: none;
+}
+
+#vinny-menu-data {
+	display: none;
 }

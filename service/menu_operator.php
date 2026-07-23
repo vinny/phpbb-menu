@@ -255,6 +255,13 @@ class menu_operator
 	 */
 	public function update_hierarchy(array $items)
 	{
+		if (empty($items))
+		{
+			return;
+		}
+
+		$this->db->sql_transaction('begin');
+
 		foreach ($items as $item)
 		{
 			$id = (int) ($item['id'] ?? 0);
@@ -270,6 +277,8 @@ class menu_operator
 				$this->db->sql_query($sql);
 			}
 		}
+
+		$this->db->sql_transaction('commit');
 	}
 
 	/**
@@ -279,6 +288,13 @@ class menu_operator
 	 */
 	public function update_orders(array $item_ids)
 	{
+		if (empty($item_ids))
+		{
+			return;
+		}
+
+		$this->db->sql_transaction('begin');
+
 		$order = 1;
 		foreach ($item_ids as $id)
 		{
@@ -292,6 +308,8 @@ class menu_operator
 				$order++;
 			}
 		}
+
+		$this->db->sql_transaction('commit');
 	}
 
 	/**
@@ -324,8 +342,9 @@ class menu_operator
 			return;
 		}
 
+		$all_items = $this->get_all_items();
 		$ids_to_delete = [$item_id];
-		$this->get_all_descendant_ids($item_id, $ids_to_delete);
+		$this->collect_descendant_ids($all_items, $item_id, $ids_to_delete);
 
 		$sql = 'DELETE FROM ' . $this->table_name . '
 			WHERE ' . $this->db->sql_in_set('item_id', $ids_to_delete);
@@ -333,23 +352,23 @@ class menu_operator
 	}
 
 	/**
-	 * Helper to recursively collect child item IDs.
+	 * In-memory recursive helper to collect child item IDs from cached array.
 	 *
+	 * @param array $all_items
 	 * @param int   $parent_id
 	 * @param array &$collected
 	 */
-	protected function get_all_descendant_ids($parent_id, &$collected)
+	protected function collect_descendant_ids($all_items, $parent_id, &$collected)
 	{
-		$sql = 'SELECT item_id FROM ' . $this->table_name . '
-			WHERE parent_id = ' . (int) $parent_id;
-		$result = $this->db->sql_query($sql);
-		while ($row = $this->db->sql_fetchrow($result))
+		foreach ($all_items as $item)
 		{
-			$child_id = (int) $row['item_id'];
-			$collected[] = $child_id;
-			$this->get_all_descendant_ids($child_id, $collected);
+			if ((int) $item['parent_id'] === (int) $parent_id)
+			{
+				$child_id = (int) $item['item_id'];
+				$collected[] = $child_id;
+				$this->collect_descendant_ids($all_items, $child_id, $collected);
+			}
 		}
-		$this->db->sql_freeresult($result);
 	}
 
 	/**
@@ -390,6 +409,8 @@ class menu_operator
 			$target_id = (int) $target['item_id'];
 			$target_order = (int) $target['item_order'];
 
+			$this->db->sql_transaction('begin');
+
 			// Swap order values
 			$sql = 'UPDATE ' . $this->table_name . '
 				SET item_order = ' . $target_order . '
@@ -400,6 +421,8 @@ class menu_operator
 				SET item_order = ' . $current_order . '
 				WHERE item_id = ' . $target_id;
 			$this->db->sql_query($sql);
+
+			$this->db->sql_transaction('commit');
 		}
 	}
 
@@ -470,18 +493,21 @@ class menu_operator
 	 */
 	protected function format_url($url)
 	{
-		if (empty($url))
+		$url = trim($url);
+
+		if ($url === '')
 		{
 			return '#';
 		}
 
-		// External link or anchor
-		if (preg_match('#^(https?://|//|\#|mailto:)#i', $url))
+		// External link, anchor, mailto or void javascript
+		if (preg_match('#^(https?://|//|\#|mailto:|javascript:)#i', $url))
 		{
 			return $url;
 		}
 
 		// Relative forum URL
-		return append_sid($this->phpbb_root_path . $url);
+		$clean_url = ltrim($url, '/');
+		return append_sid($this->phpbb_root_path . $clean_url);
 	}
 }

@@ -93,12 +93,6 @@ class main_module
 				{
 					$menu_operator->delete_item($item_id);
 
-					if ($request->is_ajax())
-					{
-						$json_response = new \phpbb\json_response();
-						$json_response->send(['success' => true]);
-					}
-
 					trigger_error($language->lang('MENU_ITEM_DELETED') . adm_back_link($this->u_action));
 				}
 				else
@@ -144,7 +138,7 @@ class main_module
 				{
 					$icon_class = ($new_status) ? 'fa-check-circle' : 'fa-times-circle';
 					$icon_color = ($new_status) ? '#228822' : '#bcbcbc';
-					$title      = ($new_status) ? $language->lang('YES') : $language->lang('NO');
+					$title      = ($new_status) ? $language->lang('DISABLE') : $language->lang('ENABLE');
 
 					$json_response = new \phpbb\json_response();
 					$json_response->send(['success' => true, 'icon_class' => $icon_class, 'icon_color' => $icon_color, 'title' => $title]);

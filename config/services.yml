@@ -26,3 +26,4 @@ services:
         class: vinny\menu\controller\ajax_controller
         arguments:
             - '@vinny.menu.operator'
+            - '@language'
