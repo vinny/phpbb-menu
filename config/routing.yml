@@ -1,0 +1,4 @@
+vinny_menu_reorder:
+    path: /vinny/menu/reorder
+    defaults: { _controller: vinny.menu.controller.ajax:reorder }
+    methods: [POST]

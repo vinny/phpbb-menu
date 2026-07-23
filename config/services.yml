@@ -1,0 +1,28 @@
+parameters:
+    tables.vinny_menu_items: '%core.table_prefix%vinny_menu_items'
+
+services:
+    vinny.menu.operator:
+        class: vinny\menu\service\menu_operator
+        arguments:
+            - '@dbal.conn'
+            - '%tables.vinny_menu_items%'
+            - '@user'
+            - '@auth'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+
+    vinny.menu.listener:
+        class: vinny\menu\event\main_listener
+        arguments:
+            - '@config'
+            - '@user'
+            - '@template'
+            - '@vinny.menu.operator'
+        tags:
+            - { name: event.listener }
+
+    vinny.menu.controller.ajax:
+        class: vinny\menu\controller\ajax_controller
+        arguments:
+            - '@vinny.menu.operator'

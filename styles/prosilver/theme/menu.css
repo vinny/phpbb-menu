@@ -1,0 +1,299 @@
+/* Header Menu Extension - Prosilver Header Seamless Extension */
+
+/* Connect headerbar directly to vinny-header-menu */
+.headerbar {
+	margin-bottom: 0 !important;
+	border-bottom-left-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
+}
+
+.vinny-header-menu {
+	background-color: #12A3EB;
+	background-image: -webkit-linear-gradient(top, #12A3EB 0%, #0076B1 100%);
+	background-image: linear-gradient(to bottom, #12A3EB 0%, #0076B1 100%);
+	background-repeat: repeat-x;
+	border-top: 1px solid rgba(255, 255, 255, 0.25);
+	border-bottom: 1px solid #005f93;
+	border-radius: 0 0 7px 7px;
+	padding: 0;
+	margin-top: 0;
+	margin-bottom: 6px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+	clear: both;
+}
+
+.vinny-header-menu .inner {
+	padding: 0 6px;
+}
+
+.vinny-header-menu .nav-main {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: stretch;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+/* Header menu items with vertical 3D dividers */
+.vinny-header-menu .header-menu-item {
+	display: flex;
+	align-items: center;
+	position: relative;
+	margin: 0;
+	padding: 0;
+	border-right: 1px solid rgba(255, 255, 255, 0.22);
+	border-left: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.vinny-header-menu .header-menu-item:first-child {
+	border-left: none;
+}
+
+.vinny-header-menu .header-menu-item:last-child {
+	border-right: none;
+}
+
+.vinny-header-menu .header-menu-item > a.nav-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 7px 12px;
+	color: #ffffff;
+	font-size: 1em;
+	font-weight: 600;
+	text-decoration: none;
+	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+	transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.vinny-header-menu .header-menu-item:hover > a.nav-link {
+	background-color: rgba(255, 255, 255, 0.18);
+	color: #ffffff;
+	text-decoration: none;
+}
+
+/* Custom Submenu Arrow Icon */
+.vinny-header-menu .header-menu-item > a.nav-link i.menu-arrow {
+	margin-left: 3px;
+	font-size: 1em;
+	opacity: 0.85;
+	transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.vinny-header-menu .header-menu-item:hover > a.nav-link i.menu-arrow {
+	transform: rotate(180deg);
+	opacity: 1;
+}
+
+/* Custom Level 2 Submenu Dropdown */
+.vinny-header-menu .vinny-dropdown-menu {
+	display: none;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 1050;
+	min-width: 200px;
+	background: #ffffff;
+	border: 1px solid #c5d4e2;
+	border-radius: 0 0 6px 6px;
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+	margin: 0;
+	padding: 4px 0;
+	list-style: none;
+	animation: vinnyMenuSlideDown 0.18s ease forwards;
+}
+
+@keyframes vinnyMenuSlideDown {
+	from {
+		opacity: 0;
+		transform: translateY(-4px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.vinny-header-menu .header-menu-item:hover > .vinny-dropdown-menu {
+	display: block;
+}
+
+.vinny-header-menu .vinny-dropdown-item {
+	position: relative;
+	margin: 0;
+	padding: 0;
+	border-bottom: 1px solid #f2f5f8;
+}
+
+.vinny-header-menu .vinny-dropdown-item:last-child {
+	border-bottom: none;
+}
+
+/* Left-aligned dropdown links */
+.vinny-header-menu .vinny-dropdown-item > a {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	text-align: left;
+	padding: 8px 14px;
+	color: #333333;
+	font-size: 1em;
+	font-weight: 500;
+	text-decoration: none;
+	transition: background-color 0.15s ease, color 0.15s ease, padding-left 0.15s ease;
+}
+
+.vinny-header-menu .vinny-dropdown-item > a .item-label {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	text-align: left;
+}
+
+.vinny-header-menu .vinny-dropdown-item > a i.icon {
+	color: #0076b1;
+}
+
+.vinny-header-menu .vinny-dropdown-item > a i.submenu-arrow {
+	margin-left: auto;
+	font-size: 1em;
+	color: #888888;
+	transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.vinny-header-menu .vinny-dropdown-item:hover > a {
+	background-color: #eaf4fd;
+	color: #0076b1;
+	padding-left: 18px;
+	text-decoration: none;
+}
+
+.vinny-header-menu .vinny-dropdown-item:hover > a i.submenu-arrow {
+	color: #0076b1;
+	transform: translateX(2px);
+}
+
+/* Custom Level 3 Sub-Submenu Flyout */
+.vinny-header-menu .vinny-subdropdown-menu {
+	display: none;
+	position: absolute;
+	top: -4px;
+	left: 100%;
+	z-index: 1060;
+	min-width: 180px;
+	background: #ffffff;
+	border: 1px solid #c5d4e2;
+	border-radius: 6px;
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+	margin-left: 1px;
+	padding: 4px 0;
+	list-style: none;
+	animation: vinnyMenuSlideRight 0.18s ease forwards;
+}
+
+@keyframes vinnyMenuSlideRight {
+	from {
+		opacity: 0;
+		transform: translateX(-4px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+.vinny-header-menu .vinny-dropdown-item.has-submenu:hover > .vinny-subdropdown-menu {
+	display: block;
+}
+
+/* Mobile Responsiveness & Touch Support */
+.vinny-header-menu .vinny-mobile-bar {
+	display: none;
+}
+
+@media (max-width: 700px) {
+	.vinny-header-menu .vinny-mobile-bar {
+		display: block;
+		padding: 6px 8px;
+	}
+
+	.vinny-header-menu .vinny-mobile-toggle {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 8px 12px;
+		color: #ffffff;
+		font-weight: 700;
+		font-size: 1em;
+		text-decoration: none;
+		background: rgba(0, 0, 0, 0.15);
+		border-radius: 4px;
+	}
+
+	.vinny-header-menu .nav-main {
+		display: none;
+		flex-direction: column;
+		align-items: stretch;
+		padding-bottom: 6px;
+	}
+
+	.vinny-header-menu.responsive-open .nav-main {
+		display: flex;
+	}
+
+	.vinny-header-menu .header-menu-item {
+		flex-direction: column;
+		align-items: stretch;
+		border-right: none;
+		border-left: none;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+	}
+
+	.vinny-header-menu .header-menu-item > a.nav-link {
+		justify-content: space-between;
+		padding: 10px 14px;
+		font-size: 1em;
+	}
+
+	.vinny-header-menu .vinny-dropdown-menu {
+		position: static;
+		display: none;
+		width: 100%;
+		box-shadow: none;
+		border-radius: 0;
+		border: none;
+		background-color: #f8fafc;
+		margin: 0;
+		padding: 0;
+		animation: none;
+	}
+
+	.vinny-header-menu .header-menu-item:hover > .vinny-dropdown-menu,
+	.vinny-header-menu .header-menu-item.has-dropdown > .vinny-dropdown-menu {
+		display: block;
+	}
+
+	.vinny-header-menu .vinny-dropdown-item > a {
+		padding: 9px 18px 9px 24px;
+		color: #222222;
+		border-bottom: 1px solid #e2e8f0;
+	}
+
+	.vinny-header-menu .vinny-subdropdown-menu {
+		position: static;
+		display: block;
+		width: 100%;
+		box-shadow: none;
+		border-radius: 0;
+		border: none;
+		background-color: #edf2f7;
+		margin: 0;
+		padding: 0;
+		animation: none;
+	}
+
+	.vinny-header-menu .vinny-subdropdown-menu .vinny-dropdown-item > a {
+		padding-left: 36px;
+	}
+}
