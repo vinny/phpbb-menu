@@ -1,0 +1,27 @@
+{
+  "name": "vinny-menu",
+  "version": "1.0.0",
+  "description": "Development tooling and linters for phpBB Header Menu extension",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint:js": "eslint \"adm/style/js/**/*.js\" \"adm/style/*.html\" \"styles/prosilver/template/**/*.html\"",
+    "lint:js:fix": "eslint \"adm/style/js/**/*.js\" \"adm/style/*.html\" \"styles/prosilver/template/**/*.html\" --fix",
+    "lint:css": "stylelint \"adm/style/css/*.css\" \"styles/prosilver/theme/*.css\"",
+    "lint:css:fix": "stylelint \"adm/style/css/*.css\" \"styles/prosilver/theme/*.css\" --fix",
+    "lint:twig": "php vendor/bin/twigcs adm/style styles/prosilver/template",
+    "lint:php": "php vendor/bin/phpcs",
+    "phpstan": "php vendor/bin/phpstan analyse",
+    "lint": "npm run lint:js && npm run lint:css && npm run lint:twig && npm run lint:php",
+    "test:unit": "cd ../../../.. && php ext/vendor/bin/phpunit -c ext/ext/vinny/menu/phpunit.xml.dist",
+    "test": "npm run lint && npm run test:unit"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "eslint": "^9.0.0",
+    "eslint-plugin-html": "^8.1.0",
+    "globals": "^15.0.0",
+    "stylelint": "^16.0.0",
+    "stylelint-config-standard": "^36.0.0"
+  }
+}

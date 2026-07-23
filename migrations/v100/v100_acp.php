@@ -1,4 +1,5 @@
 <?php
+
 /**
 *
 * Header Menu extension for the phpBB Forum Software package.
@@ -37,7 +38,7 @@ class v100_acp extends \phpbb\db\migration\migration
 	 *
 	 * @return array
 	 */
-	static public function depends_on()
+	public static function depends_on()
 	{
 		return ['\vinny\menu\migrations\v100\v100_schema'];
 	}

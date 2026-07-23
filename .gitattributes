@@ -1,0 +1,18 @@
+# Auto-detect text files and normalize line endings
+* text=auto
+
+# Exclude development, test, CI, and linter files from release zip exports (git archive / GitHub Releases)
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/.github export-ignore
+/tests export-ignore
+/phpunit.xml.dist export-ignore
+/phpstan.neon export-ignore
+/phpcs.xml.dist export-ignore
+/scratch export-ignore
+/eslint.config.js export-ignore
+/.stylelintrc.json export-ignore
+/package.json export-ignore
+/package-lock.json export-ignore
+/composer.lock export-ignore
+/DEVELOPMENT.md export-ignore

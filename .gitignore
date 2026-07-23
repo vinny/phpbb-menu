@@ -1,0 +1,29 @@
+# Temporary & Scratch directories
+/scratch/
+*.log
+
+# Dependencies & Lock files
+/vendor/
+/node_modules/
+/composer.phar
+composer.lock
+package-lock.json
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Test and Cache outputs
+.phpunit.cache/
+.phpunit.result.cache
+.phpstan.cache/
+.build/
+coverage/

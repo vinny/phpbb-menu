@@ -69,20 +69,20 @@
 				},
 				body: JSON.stringify({ items: treeData })
 			})
-			.then(function(res) { return res.json(); })
-			.then(function(data) {
-				if (data.success) {
-					$icon.removeClass('fa-spinner fa-spin').addClass('fa-check').css('color', '#2ecc71');
-					setTimeout(function() {
-						$icon.removeClass('fa-check').addClass('fa-arrows').css('color', '');
-					}, 1000);
-				} else {
+				.then(function(res) { return res.json(); })
+				.then(function(data) {
+					if (data.success) {
+						$icon.removeClass('fa-spinner fa-spin').addClass('fa-check').css('color', '#2ecc71');
+						setTimeout(function() {
+							$icon.removeClass('fa-check').addClass('fa-arrows').css('color', '');
+						}, 1000);
+					} else {
+						showError($icon);
+					}
+				})
+				.catch(function() {
 					showError($icon);
-				}
-			})
-			.catch(function() {
-				showError($icon);
-			});
+				});
 		};
 
 		var nestedElements = document.querySelectorAll('.nested-sortable');
@@ -117,7 +117,7 @@
 				.attr('data-original-title', res.title);
 		});
 
-		phpbb.addAjaxCallback('row_delete', function(res) {
+		phpbb.addAjaxCallback('row_delete', function(_res) {
 			var $li = $(this).closest('li');
 			$li.fadeOut(300, function() {
 				$li.remove();

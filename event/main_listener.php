@@ -1,4 +1,5 @@
 <?php
+
 /**
 *
 * Header Menu extension for the phpBB Forum Software package.
@@ -58,8 +59,8 @@ class main_listener implements EventSubscriberInterface
 	public static function getSubscribedEvents()
 	{
 		return [
-			'core.user_setup'        => 'load_language_on_setup',
-			'core.page_header_after' => 'render_menu',
+			'core.user_setup'			=> 'load_language_on_setup',
+			'core.page_header_after'	=> 'render_menu',
 		];
 	}
 
@@ -83,9 +84,9 @@ class main_listener implements EventSubscriberInterface
 	 *
 	 * @param \phpbb\event\data $event
 	 */
-	public function render_menu($event)
+	public function render_menu($event = null)
 	{
-		$enabled = (bool) ($this->config['vinny_menu_enable'] ?? 1);
+		$enabled = isset($this->config['vinny_menu_enable']) ? (bool) $this->config['vinny_menu_enable'] : true;
 		if (!$enabled)
 		{
 			return;
@@ -101,12 +102,12 @@ class main_listener implements EventSubscriberInterface
 		foreach ($header_items as $item)
 		{
 			$block_data = [
-				'ID'           => $item['item_id'],
-				'NAME'         => $item['item_name'],
-				'URL'          => $item['formatted_url'],
-				'ICON'         => $item['item_icon'],
-				'TARGET'       => $item['item_target'],
-				'HAS_CHILDREN' => !empty($item['children']),
+				'ID'			=> $item['item_id'],
+				'NAME'			=> $item['item_name'],
+				'URL'			=> $item['formatted_url'],
+				'ICON'			=> $item['item_icon'],
+				'TARGET'		=> $item['item_target'],
+				'HAS_CHILDREN'	=> !empty($item['children']),
 			];
 
 			$this->template->assign_block_vars('vinny_menu_header', $block_data);
@@ -116,12 +117,12 @@ class main_listener implements EventSubscriberInterface
 				foreach ($item['children'] as $child)
 				{
 					$this->template->assign_block_vars('vinny_menu_header.children', [
-						'ID'           => $child['item_id'],
-						'NAME'         => $child['item_name'],
-						'URL'          => $child['formatted_url'],
-						'ICON'         => $child['item_icon'],
-						'TARGET'       => $child['item_target'],
-						'HAS_CHILDREN' => !empty($child['children']),
+						'ID'			=> $child['item_id'],
+						'NAME'			=> $child['item_name'],
+						'URL'			=> $child['formatted_url'],
+						'ICON'			=> $child['item_icon'],
+						'TARGET'		=> $child['item_target'],
+						'HAS_CHILDREN'	=> !empty($child['children']),
 					]);
 
 					if (!empty($child['children']))
@@ -129,11 +130,11 @@ class main_listener implements EventSubscriberInterface
 						foreach ($child['children'] as $subchild)
 						{
 							$this->template->assign_block_vars('vinny_menu_header.children.subchildren', [
-								'ID'     => $subchild['item_id'],
-								'NAME'   => $subchild['item_name'],
-								'URL'    => $subchild['formatted_url'],
-								'ICON'   => $subchild['item_icon'],
-								'TARGET' => $subchild['item_target'],
+								'ID'		=> $subchild['item_id'],
+								'NAME'		=> $subchild['item_name'],
+								'URL'		=> $subchild['formatted_url'],
+								'ICON'		=> $subchild['item_icon'],
+								'TARGET'	=> $subchild['item_target'],
 							]);
 						}
 					}

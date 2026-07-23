@@ -1,7 +1,7 @@
 {
     "name": "vinny/menu",
     "type": "phpbb-extension",
-    "description": "Header Menu extension for phpBB allowing administrators to create and manage custom navigation menus.",
+    "description": "Header Menu extension for phpBB allowing administrators to create and manage a custom navigation menu.",
     "homepage": "https://github.com/vinny/phpbb-menu",
     "version": "1.0.0",
     "keywords": [
@@ -26,6 +26,19 @@
         "display-name": "Header Menu",
         "soft-require": {
             "phpbb/phpbb": ">=3.3.0,<4.0.0@dev"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require-dev": {
+        "phpstan/phpstan": "^2.2",
+        "phpunit/phpunit": "^9.5",
+        "friendsoftwig/twigcs": "^5.1",
+        "squizlabs/php_codesniffer": "^4.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
         }
     }
 }

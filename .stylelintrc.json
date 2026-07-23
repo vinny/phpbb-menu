@@ -1,0 +1,21 @@
+{
+  "extends": "stylelint-config-standard",
+  "ignoreFiles": [
+    "adm/style/js/Sortable.min.js",
+    "vendor/**",
+    "node_modules/**"
+  ],
+  "rules": {
+    "selector-class-pattern": null,
+    "custom-property-pattern": null,
+    "import-notation": "string",
+    "color-function-notation": null,
+    "alpha-value-notation": null,
+    "color-hex-length": null,
+    "keyframes-name-pattern": null,
+    "media-feature-range-notation": null,
+    "no-descending-specificity": null,
+    "value-no-vendor-prefix": null,
+    "rule-empty-line-before": null
+  }
+}

@@ -1,4 +1,5 @@
 <?php
+
 /**
 *
 * Header Menu extension for the phpBB Forum Software package.
@@ -150,7 +151,7 @@ class menu_operator
 			{
 				$all_items[$item['parent_id']]['children'][] = &$all_items[$id];
 			}
-			elseif ($item['parent_id'] == 0)
+			else if ($item['parent_id'] == 0)
 			{
 				$tree[] = &$all_items[$id];
 			}
@@ -215,12 +216,12 @@ class menu_operator
 	public function save_item($data, $item_id = 0)
 	{
 		$sql_ary = [
-			'parent_id'    => (int) ($data['parent_id'] ?? 0),
-			'item_name'    => (string) ($data['item_name'] ?? ''),
-			'item_url'     => (string) ($data['item_url'] ?? ''),
-			'item_icon'    => (string) ($data['item_icon'] ?? ''),
-			'item_target'  => (string) ($data['item_target'] ?? '_self'),
-			'item_enabled' => (int) ($data['item_enabled'] ?? 1),
+			'parent_id'		=> (int) ($data['parent_id'] ?? 0),
+			'item_name'		=> (string) ($data['item_name'] ?? ''),
+			'item_url'		=> (string) ($data['item_url'] ?? ''),
+			'item_icon'		=> (string) ($data['item_icon'] ?? ''),
+			'item_target'	=> (string) ($data['item_target'] ?? '_self'),
+			'item_enabled'	=> (int) ($data['item_enabled'] ?? 1),
 		];
 
 		if ($item_id > 0)
@@ -476,7 +477,7 @@ class menu_operator
 			{
 				$all_items[$item['parent_id']]['children'][] = &$all_items[$id];
 			}
-			elseif ($item['parent_id'] == 0)
+			else if ($item['parent_id'] == 0)
 			{
 				$tree[] = &$all_items[$id];
 			}

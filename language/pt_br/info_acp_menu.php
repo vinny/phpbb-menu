@@ -1,4 +1,5 @@
 <?php
+
 /**
 *
 * Header Menu extension for the phpBB Forum Software package.
@@ -19,7 +20,7 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, [
-	'ACP_HEADER_MENU_TITLE'   => 'Header Menu',
-	'ACP_HEADER_MENU_MANAGE'  => 'Gerenciar Header Menu',
-	'ACP_HEADER_MENU_EXPLAIN' => 'Crie, reordene e gerencie itens de menu de navegação personalizados.',
+	'ACP_HEADER_MENU_TITLE'		=> 'Header Menu',
+	'ACP_HEADER_MENU_MANAGE'	=> 'Gerenciar Header Menu',
+	'ACP_HEADER_MENU_EXPLAIN'	=> 'Crie, reordene e gerencie itens de menu de navegação personalizados.',
 ]);

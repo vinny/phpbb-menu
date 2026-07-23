@@ -215,9 +215,20 @@
 }
 
 @media (max-width: 700px) {
+	.vinny-header-menu {
+		margin-left: -5px;
+		margin-right: -5px;
+		border-radius: 0;
+		box-shadow: none;
+	}
+
+	.vinny-header-menu .inner {
+		padding: 0;
+	}
+
 	.vinny-header-menu .vinny-mobile-bar {
 		display: block;
-		padding: 6px 0;
+		padding: 0;
 	}
 
 	.vinny-header-menu .vinny-mobile-toggle {
@@ -225,19 +236,19 @@
 		align-items: center;
 		justify-content: center;
 		gap: 8px;
-		padding: 10px 14px;
+		padding: 12px 14px;
 		color: #ffffff;
 		font-weight: 700;
 		font-size: 1.1em;
 		text-decoration: none;
 		text-align: center;
-		background: rgba(0, 0, 0, 0.12);
-		border-radius: 4px;
+		background: rgba(0, 0, 0, 0.1);
+		border-radius: 0;
 		transition: background-color 0.2s ease;
 	}
 
 	.vinny-header-menu .vinny-mobile-toggle:hover {
-		background: rgba(0, 0, 0, 0.22);
+		background: rgba(0, 0, 0, 0.2);
 		text-decoration: none;
 		color: #ffffff;
 	}

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<ruleset name="Header Menu Extension Coding Standard">
+    <description>Coding standard configuration for Header Menu extension.</description>
+
+    <!-- Paths to check -->
+    <file>acp</file>
+    <file>controller</file>
+    <file>event</file>
+    <file>migrations</file>
+    <file>service</file>
+    <file>language</file>
+
+    <!-- Exclude third-party vendor directories and tests -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+
+    <!-- Use PSR-12 standard but ignore space-indent constraints and require tab-indent for phpBB -->
+    <rule ref="PSR12">
+        <exclude name="Generic.WhiteSpace.DisallowTabIndent"/>
+        <exclude name="PSR1.Methods.CamelCapsMethodName"/>
+        <exclude name="Squiz.ControlStructures.ControlSignature"/>
+        <exclude name="PSR2.Classes.ClassDeclaration"/>
+        <exclude name="PSR2.Methods.FunctionClosingBrace"/>
+        <exclude name="Squiz.Classes.ValidClassName"/>
+        <exclude name="Generic.Files.LineLength"/>
+        <exclude name="Generic.WhiteSpace.ScopeIndent"/>
+        <exclude name="PSR2.ControlStructures.ElseIfDeclaration"/>
+        <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.NewlineBeforeOpenBrace"/>
+    </rule>
+
+    <!-- Enforce tab indentation and forbid space indentation -->
+    <rule ref="Generic.WhiteSpace.ScopeIndent">
+        <properties>
+            <property name="indent" value="4"/>
+            <property name="tabIndent" value="true"/>
+        </properties>
+    </rule>
+    <rule ref="Generic.WhiteSpace.DisallowSpaceIndent"/>
+
+    <!-- Additional config -->
+    <arg name="colors"/>
+    <arg value="sp"/>
+</ruleset>

@@ -1,4 +1,5 @@
 <?php
+
 /**
 *
 * Header Menu extension for the phpBB Forum Software package.
@@ -30,7 +31,7 @@ class v100_schema extends \phpbb\db\migration\migration
 	 *
 	 * @return array
 	 */
-	static public function depends_on()
+	public static function depends_on()
 	{
 		return ['\phpbb\db\migration\data\v330\v330'];
 	}
@@ -46,19 +47,19 @@ class v100_schema extends \phpbb\db\migration\migration
 			'add_tables' => [
 				$this->table_prefix . 'vinny_menu_items' => [
 					'COLUMNS' => [
-						'item_id'      => ['UINT', null, 'auto_increment'],
-						'parent_id'    => ['UINT', 0],
-						'item_name'    => ['VCHAR:255', ''],
-						'item_url'     => ['VCHAR:255', ''],
-						'item_icon'    => ['VCHAR:100', ''],
-						'item_target'  => ['VCHAR:20', '_self'],
-						'item_order'   => ['UINT', 0],
-						'item_enabled' => ['BOOL', 1],
+						'item_id'		=> ['UINT', null, 'auto_increment'],
+						'parent_id'		=> ['UINT', 0],
+						'item_name'		=> ['VCHAR:255', ''],
+						'item_url'		=> ['VCHAR:255', ''],
+						'item_icon'		=> ['VCHAR:100', ''],
+						'item_target'	=> ['VCHAR:20', '_self'],
+						'item_order'	=> ['UINT', 0],
+						'item_enabled'	=> ['BOOL', 1],
 					],
 					'PRIMARY_KEY' => 'item_id',
 					'KEYS' => [
-						'parent_id'  => ['INDEX', 'parent_id'],
-						'item_order' => ['INDEX', 'item_order'],
+						'parent_id' 	=> ['INDEX', 'parent_id'],
+						'item_order'	=> ['INDEX', 'item_order'],
 					],
 				],
 			],
