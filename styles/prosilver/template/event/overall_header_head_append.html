@@ -1,3 +1,6 @@
 {% if S_VINNY_MENU_ENABLED %}
-{% INCLUDECSS '@vinny_menu/menu.css' %}
+	{% if not definition.INCLUDED_VINNY_MENU_CSS %}
+		{% INCLUDECSS '@vinny_menu/menu.css' %}
+		{% DEFINE INCLUDED_VINNY_MENU_CSS = true %}
+	{% endif %}
 {% endif %}

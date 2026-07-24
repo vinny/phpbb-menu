@@ -168,8 +168,8 @@ class menu_operator
 	 */
 	public function get_parent_options($exclude_id = 0)
 	{
+		$exclude_id = (int) $exclude_id;
 		$sql = 'SELECT item_id, parent_id, item_name FROM ' . $this->table_name . '
-			' . (($exclude_id > 0) ? 'WHERE item_id <> ' . (int) $exclude_id : '') . '
 			ORDER BY item_order ASC, item_name ASC';
 		$result = $this->db->sql_query($sql);
 		$all = [];
@@ -179,8 +179,16 @@ class menu_operator
 		}
 		$this->db->sql_freeresult($result);
 
+		$excluded_ids = [];
+		if ($exclude_id > 0)
+		{
+			$excluded_list = [$exclude_id];
+			$this->collect_descendant_ids($all, $exclude_id, $excluded_list);
+			$excluded_ids = array_flip($excluded_list);
+		}
+
 		$parents = [];
-		$this->build_parent_tree($all, 0, 0, $parents);
+		$this->build_parent_tree($all, 0, 0, $parents, $excluded_ids);
 
 		return $parents;
 	}
@@ -188,20 +196,27 @@ class menu_operator
 	/**
 	 * Recursive helper to build parent dropdown options with indentation.
 	 *
-	 * @param array  $items
-	 * @param int    $parent_id
-	 * @param int    $depth
-	 * @param array  &$result
+	 * @param array $items
+	 * @param int   $parent_id
+	 * @param int   $depth
+	 * @param array &$result
+	 * @param array $excluded_ids Map of excluded item IDs
 	 */
-	protected function build_parent_tree($items, $parent_id, $depth, &$result)
+	protected function build_parent_tree($items, $parent_id, $depth, &$result, array $excluded_ids = [])
 	{
 		foreach ($items as $item)
 		{
+			$id = (int) $item['item_id'];
+			if (isset($excluded_ids[$id]))
+			{
+				continue;
+			}
+
 			if ((int) $item['parent_id'] === (int) $parent_id)
 			{
 				$prefix = str_repeat('   ', $depth) . ($depth > 0 ? '└-- ' : '');
-				$result[$item['item_id']] = $prefix . $item['item_name'];
-				$this->build_parent_tree($items, $item['item_id'], $depth + 1, $result);
+				$result[$id] = $prefix . $item['item_name'];
+				$this->build_parent_tree($items, $id, $depth + 1, $result, $excluded_ids);
 			}
 		}
 	}
@@ -272,9 +287,9 @@ class menu_operator
 			if ($id > 0)
 			{
 				$sql = 'UPDATE ' . $this->table_name . '
-					SET parent_id = ' . $parent_id . ',
-						item_order = ' . $order . '
-					WHERE item_id = ' . $id;
+					SET parent_id = ' . (int) $parent_id . ',
+						item_order = ' . (int) $order . '
+					WHERE item_id = ' . (int) $id;
 				$this->db->sql_query($sql);
 			}
 		}
@@ -303,8 +318,8 @@ class menu_operator
 			if ($id > 0)
 			{
 				$sql = 'UPDATE ' . $this->table_name . '
-					SET item_order = ' . $order . '
-					WHERE item_id = ' . $id;
+					SET item_order = ' . (int) $order . '
+					WHERE item_id = ' . (int) $id;
 				$this->db->sql_query($sql);
 				$order++;
 			}
@@ -391,13 +406,13 @@ class menu_operator
 		if ($direction === 'up')
 		{
 			$sql = 'SELECT item_id, item_order FROM ' . $this->table_name . '
-				WHERE item_order < ' . $current_order . '
+				WHERE item_order < ' . (int) $current_order . '
 				ORDER BY item_order DESC';
 		}
 		else
 		{
 			$sql = 'SELECT item_id, item_order FROM ' . $this->table_name . '
-				WHERE item_order > ' . $current_order . '
+				WHERE item_order > ' . (int) $current_order . '
 				ORDER BY item_order ASC';
 		}
 
@@ -414,13 +429,13 @@ class menu_operator
 
 			// Swap order values
 			$sql = 'UPDATE ' . $this->table_name . '
-				SET item_order = ' . $target_order . '
+				SET item_order = ' . (int) $target_order . '
 				WHERE item_id = ' . (int) $item_id;
 			$this->db->sql_query($sql);
 
 			$sql = 'UPDATE ' . $this->table_name . '
-				SET item_order = ' . $current_order . '
-				WHERE item_id = ' . $target_id;
+				SET item_order = ' . (int) $current_order . '
+				WHERE item_id = ' . (int) $target_id;
 			$this->db->sql_query($sql);
 
 			$this->db->sql_transaction('commit');

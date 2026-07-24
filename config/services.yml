@@ -27,3 +27,4 @@ services:
         arguments:
             - '@vinny.menu.operator'
             - '@language'
+            - '@auth'

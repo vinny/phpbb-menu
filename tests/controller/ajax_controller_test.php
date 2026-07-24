@@ -23,6 +23,9 @@ class ajax_controller_test extends \PHPUnit\Framework\TestCase
 	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\language\language */
 	protected $language;
 
+	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\auth\auth */
+	protected $auth;
+
 	/** @var \vinny\menu\controller\ajax_controller */
 	protected $controller;
 
@@ -30,10 +33,17 @@ class ajax_controller_test extends \PHPUnit\Framework\TestCase
 	{
 		$this->operator = $this->createMock(\vinny\menu\service\menu_operator::class);
 		$this->language = $this->createMock(\phpbb\language\language::class);
+		$this->auth = $this->createMock(\phpbb\auth\auth::class);
+
+		$this->auth->expects($this->any())
+			->method('acl_get')
+			->with('a_board')
+			->willReturn(true);
 
 		$this->controller = new \vinny\menu\controller\ajax_controller(
 			$this->operator,
-			$this->language
+			$this->language,
+			$this->auth
 		);
 	}
 

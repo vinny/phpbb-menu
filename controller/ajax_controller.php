@@ -25,16 +25,25 @@ class ajax_controller
 	/** @var \phpbb\language\language */
 	protected $language;
 
+	/** @var \phpbb\auth\auth */
+	protected $auth;
+
 	/**
 	 * Constructor
 	 *
 	 * @param \vinny\menu\service\menu_operator $menu_operator
 	 * @param \phpbb\language\language          $language
+	 * @param \phpbb\auth\auth                  $auth
 	 */
-	public function __construct(\vinny\menu\service\menu_operator $menu_operator, \phpbb\language\language $language)
+	public function __construct(
+		\vinny\menu\service\menu_operator $menu_operator,
+		\phpbb\language\language $language,
+		\phpbb\auth\auth $auth
+	)
 	{
 		$this->menu_operator = $menu_operator;
 		$this->language = $language;
+		$this->auth = $auth;
 	}
 
 	/**
@@ -46,6 +55,12 @@ class ajax_controller
 	public function reorder(Request $request)
 	{
 		$this->language->add_lang('common', 'vinny/menu');
+
+		// Explicit ACL Permission Check for Admin Board access
+		if (!$this->auth->acl_get('a_board'))
+		{
+			return new JsonResponse(['success' => false, 'error' => $this->language->lang('NO_AUTH_OPERATION')], 403);
+		}
 
 		// Check raw JSON payload
 		$content = $request->getContent();

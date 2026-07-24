@@ -43,52 +43,49 @@ class main_module
 
 		add_form_key('vinny_menu_manage');
 
-		// Handle actions
+		// Handle form submissions
+		if ($request->is_set_post('submit_settings'))
+		{
+			if (!check_form_key('vinny_menu_manage'))
+			{
+				trigger_error($language->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
+			}
+
+			$config->set('vinny_menu_enable', $request->variable('vinny_menu_enable', 1));
+
+			trigger_error($language->lang('MENU_SETTINGS_SAVED') . adm_back_link($this->u_action));
+		}
+
+		if ($request->is_set_post('submit'))
+		{
+			if (!check_form_key('vinny_menu_manage'))
+			{
+				trigger_error($language->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
+			}
+
+			$item_data = [
+				'parent_id'		=> $request->variable('parent_id', 0),
+				'item_name'		=> $request->variable('item_name', '', true),
+				'item_url'		=> $request->variable('item_url', '', true),
+				'item_icon'		=> $request->variable('item_icon', ''),
+				'item_target'	=> $request->variable('item_target', '_self'),
+				'item_enabled'	=> $request->variable('item_enabled', 1),
+			];
+
+			if (empty($item_data['item_name']))
+			{
+				trigger_error($language->lang('MENU_ITEM_NAME_REQUIRED') . adm_back_link($this->u_action), E_USER_WARNING);
+			}
+
+			$menu_operator->save_item($item_data, $item_id);
+
+			$msg = ($item_id > 0) ? $language->lang('MENU_ITEM_UPDATED') : $language->lang('MENU_ITEM_ADDED');
+			trigger_error($msg . adm_back_link($this->u_action));
+		}
+
+		// Handle GET actions
 		switch ($action)
 		{
-			case 'save_settings':
-				if ($request->is_set_post('submit_settings'))
-				{
-					if (!check_form_key('vinny_menu_manage'))
-					{
-						trigger_error($language->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
-					}
-
-					$config->set('vinny_menu_enable', $request->variable('vinny_menu_enable', 1));
-
-					trigger_error($language->lang('MENU_SETTINGS_SAVED') . adm_back_link($this->u_action));
-				}
-				break;
-
-			case 'save':
-				if ($request->is_set_post('submit'))
-				{
-					if (!check_form_key('vinny_menu_manage'))
-					{
-						trigger_error($language->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
-					}
-
-					$item_data = [
-						'parent_id'		=> $request->variable('parent_id', 0),
-						'item_name'		=> $request->variable('item_name', '', true),
-						'item_url'		=> $request->variable('item_url', '', true),
-						'item_icon'		=> $request->variable('item_icon', ''),
-						'item_target'	=> $request->variable('item_target', '_self'),
-						'item_enabled'	=> $request->variable('item_enabled', 1),
-					];
-
-					if (empty($item_data['item_name']))
-					{
-						trigger_error($language->lang('MENU_ITEM_NAME_REQUIRED') . adm_back_link($this->u_action), E_USER_WARNING);
-					}
-
-					$menu_operator->save_item($item_data, $item_id);
-
-					$msg = ($item_id > 0) ? $language->lang('MENU_ITEM_UPDATED') : $language->lang('MENU_ITEM_ADDED');
-					trigger_error($msg . adm_back_link($this->u_action));
-				}
-				break;
-
 			case 'delete':
 				if (confirm_box(true))
 				{

@@ -49,5 +49,8 @@
 			</ul>
 		</div>
 	</div>
-	{% INCLUDEJS '@vinny_menu/js/menu.js' %}
+	{% if not definition.INCLUDED_VINNY_MENU_JS %}
+		{% INCLUDEJS '@vinny_menu/js/menu.js' %}
+		{% DEFINE INCLUDED_VINNY_MENU_JS = true %}
+	{% endif %}
 {% endif %}

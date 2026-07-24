@@ -11,7 +11,7 @@
 	<a href="{{ U_ACTION }}" class="button2 acp-menu-back-btn">&laquo; {{ lang('BACK') }}</a>
 	<h2>{{ lang('MENU_EDIT_ITEM') }}</h2>
 
-	<form id="acp_menu_form" method="post" action="{{ U_ACTION }}&amp;action=save">
+	<form id="acp_menu_edit" method="post" action="{{ U_ACTION }}">
 		<fieldset>
 			<dl>
 				<dt><label for="item_name">{{ lang('MENU_ITEM_NAME') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_NAME_EXPLAIN') }}</span></dt>
@@ -64,7 +64,7 @@
 
 {% else %}
 
-	<form id="acp_menu_settings" method="post" action="{{ U_ACTION }}&amp;action=save_settings">
+	<form id="acp_menu_settings" method="post" action="{{ U_ACTION }}">
 		<fieldset>
 			<legend>{{ lang('MENU_GLOBAL_SETTINGS') }}</legend>
 			<dl>
@@ -86,7 +86,7 @@
 
 	<h2>{{ lang('MENU_ADD_ITEM') }}</h2>
 
-	<form id="acp_menu_form" method="post" action="{{ U_ACTION }}&amp;action=save">
+	<form id="acp_menu_add" method="post" action="{{ U_ACTION }}">
 		<fieldset>
 			<dl>
 				<dt><label for="item_name">{{ lang('MENU_ITEM_NAME') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_NAME_EXPLAIN') }}</span></dt>
