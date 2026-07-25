@@ -138,4 +138,55 @@ class menu_operator_test extends \PHPUnit\Framework\TestCase
 		$new_state = $this->operator->toggle_enabled(5);
 		$this->assertEquals(0, $new_state);
 	}
+
+	public function test_get_user_group_ids()
+	{
+		$this->db->expects($this->once())
+			->method('sql_query')
+			->willReturn('result_handle');
+
+		$this->db->expects($this->atLeastOnce())
+			->method('sql_fetchrow')
+			->willReturnOnConsecutiveCalls(['group_id' => 2], ['group_id' => 4], false);
+
+		$groups = $this->operator->get_user_group_ids(5);
+		$this->assertEquals([2, 4], $groups);
+	}
+
+	public function test_get_all_groups()
+	{
+		$raw_groups = [
+			['group_id' => 1, 'group_name' => 'GUESTS', 'group_type' => 3],
+			['group_id' => 2, 'group_name' => 'REGISTERED', 'group_type' => 3],
+		];
+
+		$this->db->expects($this->once())
+			->method('sql_query')
+			->willReturn('result_handle');
+
+		$this->db->expects($this->atLeastOnce())
+			->method('sql_fetchrow')
+			->willReturnOnConsecutiveCalls($raw_groups[0], $raw_groups[1], false);
+
+		$result = $this->operator->get_all_groups('2');
+		$this->assertCount(2, $result);
+		$this->assertTrue($result[1]['selected']);
+	}
+
+	public function test_get_item_level_and_subtree_height()
+	{
+		$items = [
+			1 => ['item_id' => 1, 'parent_id' => 0],
+			2 => ['item_id' => 2, 'parent_id' => 1],
+			3 => ['item_id' => 3, 'parent_id' => 2],
+		];
+
+		$this->assertEquals(1, $this->operator->get_item_level(1, $items));
+		$this->assertEquals(2, $this->operator->get_item_level(2, $items));
+		$this->assertEquals(3, $this->operator->get_item_level(3, $items));
+
+		$this->assertEquals(2, $this->operator->get_subtree_height(1, $items));
+		$this->assertEquals(1, $this->operator->get_subtree_height(2, $items));
+		$this->assertEquals(0, $this->operator->get_subtree_height(3, $items));
+	}
 }

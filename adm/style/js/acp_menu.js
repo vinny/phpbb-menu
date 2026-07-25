@@ -23,6 +23,37 @@
 			}, 2000);
 		};
 
+		function getContainerLevel(olEl) {
+			var level = 1;
+			var current = olEl;
+			while (current && current.id !== 'root-menu-tree') {
+				if (current.tagName === 'OL') {
+					level++;
+				}
+				current = current.parentElement;
+			}
+			return level;
+		}
+
+		function getItemSubtreeHeight(liEl) {
+			var maxH = 0;
+			var childrenOls = Array.prototype.filter.call(liEl.children, function(c) {
+				return c.tagName === 'OL';
+			});
+			childrenOls.forEach(function(ol) {
+				var lis = Array.prototype.filter.call(ol.children, function(c) {
+					return c.tagName === 'LI';
+				});
+				lis.forEach(function(childLi) {
+					var childH = 1 + getItemSubtreeHeight(childLi);
+					if (childH > maxH) {
+						maxH = childH;
+					}
+				});
+			});
+			return maxH;
+		}
+
 		function serializeNestedTree(container, parentId) {
 			var items = [];
 			var order = 1;
@@ -94,6 +125,13 @@
 					fallbackOnBody: true,
 					swapThreshold: 0.65,
 					handle: '.drag-handle',
+					onMove: function(evt) {
+						var targetLevel = getContainerLevel(evt.to);
+						var draggedHeight = getItemSubtreeHeight(evt.dragged);
+						if (targetLevel + draggedHeight > 3) {
+							return false;
+						}
+					},
 					onEnd: function(evt) {
 						var $activeHandle = $(evt.item).find('.nested-item-row .drag-handle').first();
 						if (!$activeHandle.length) {

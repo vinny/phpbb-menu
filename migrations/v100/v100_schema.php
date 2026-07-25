@@ -55,6 +55,7 @@ class v100_schema extends \phpbb\db\migration\migration
 						'item_target'	=> ['VCHAR:20', '_self'],
 						'item_order'	=> ['UINT', 0],
 						'item_enabled'	=> ['BOOL', 1],
+						'item_hide_groups' => ['VCHAR:255', ''],
 					],
 					'PRIMARY_KEY' => 'item_id',
 					'KEYS' => [

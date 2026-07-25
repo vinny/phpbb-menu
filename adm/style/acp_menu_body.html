@@ -52,6 +52,14 @@
 					<label><input type="radio" class="radio" name="item_enabled" value="0"{% if not ITEM_ENABLED %} checked="checked"{% endif %} /> {{ lang('NO') }}</label>
 				</dd>
 			</dl>
+			<dl>
+				<dt><label>{{ lang('MENU_HIDE_FOR_GROUPS') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_HIDE_FOR_GROUPS_EXPLAIN') }}</span></dt>
+				<dd>
+					{% for group in loops.groups %}
+						<label><input type="checkbox" name="item_hide_groups[]" value="{{ group.ID }}"{% if group.S_SELECTED %} checked="checked"{% endif %} /> {{ group.NAME }}</label><br />
+					{% endfor %}
+				</dd>
+			</dl>
 		</fieldset>
 
 		<fieldset class="submit-buttons">
@@ -125,6 +133,14 @@
 				<dd>
 					<label><input type="radio" class="radio" name="item_enabled" value="1" checked="checked" /> {{ lang('YES') }}</label>
 					<label><input type="radio" class="radio" name="item_enabled" value="0" /> {{ lang('NO') }}</label>
+				</dd>
+			</dl>
+			<dl>
+				<dt><label>{{ lang('MENU_HIDE_FOR_GROUPS') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_HIDE_FOR_GROUPS_EXPLAIN') }}</span></dt>
+				<dd>
+					{% for group in loops.groups %}
+						<label><input type="checkbox" name="item_hide_groups[]" value="{{ group.ID }}" /> {{ group.NAME }}</label><br />
+					{% endfor %}
 				</dd>
 			</dl>
 		</fieldset>
@@ -209,7 +225,6 @@
 													<a href="{{ subchild.U_DELETE }}" data-ajax="row_delete">{{ ICON_DELETE|raw }}</a>
 												</div>
 											</div>
-											<ol class="nested-sortable"></ol>
 										</li>
 									{% endfor %}
 								</ol>

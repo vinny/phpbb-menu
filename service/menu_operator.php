@@ -187,10 +187,108 @@ class menu_operator
 			$excluded_ids = array_flip($excluded_list);
 		}
 
+		$all_map = [];
+		foreach ($all as $item)
+		{
+			$all_map[(int) $item['item_id']] = $item;
+		}
+
+		$subtree_height = ($exclude_id > 0) ? $this->get_subtree_height($exclude_id, $all_map) : 0;
+
 		$parents = [];
-		$this->build_parent_tree($all, 0, 0, $parents, $excluded_ids);
+		$this->build_parent_tree($all, 0, 0, $parents, $excluded_ids, $subtree_height, $all_map);
 
 		return $parents;
+	}
+
+	/**
+	 * Fetch all items mapped by item_id.
+	 *
+	 * @return array
+	 */
+	public function get_items_by_id_map()
+	{
+		$items = $this->get_all_items();
+		$map = [];
+		foreach ($items as $item)
+		{
+			$map[(int) $item['item_id']] = $item;
+		}
+		return $map;
+	}
+
+	/**
+	 * Get 1-based hierarchy level of an item (1 = Root, 2 = Submenu, 3 = Sub-submenu).
+	 *
+	 * @param int   $item_id
+	 * @param array $all_items
+	 * @return int
+	 */
+	public function get_item_level($item_id, array $all_items = [])
+	{
+		$item_id = (int) $item_id;
+		if ($item_id <= 0)
+		{
+			return 0;
+		}
+
+		if (empty($all_items))
+		{
+			$all_items = $this->get_items_by_id_map();
+		}
+
+		$level = 1;
+		$current_id = $item_id;
+		$visited = [];
+
+		while (isset($all_items[$current_id]) && (int) $all_items[$current_id]['parent_id'] > 0)
+		{
+			if (isset($visited[$current_id]))
+			{
+				break;
+			}
+			$visited[$current_id] = true;
+			$current_id = (int) $all_items[$current_id]['parent_id'];
+			$level++;
+		}
+
+		return $level;
+	}
+
+	/**
+	 * Get maximum height of descendants under item_id (0 = leaf, 1 = children, 2 = subchildren).
+	 *
+	 * @param int   $item_id
+	 * @param array $all_items
+	 * @return int
+	 */
+	public function get_subtree_height($item_id, array $all_items = [])
+	{
+		$item_id = (int) $item_id;
+		if ($item_id <= 0)
+		{
+			return 0;
+		}
+
+		if (empty($all_items))
+		{
+			$all_items = $this->get_items_by_id_map();
+		}
+
+		$max_height = 0;
+		foreach ($all_items as $item)
+		{
+			if ((int) $item['parent_id'] === $item_id)
+			{
+				$child_height = 1 + $this->get_subtree_height((int) $item['item_id'], $all_items);
+				if ($child_height > $max_height)
+				{
+					$max_height = $child_height;
+				}
+			}
+		}
+
+		return $max_height;
 	}
 
 	/**
@@ -201,8 +299,10 @@ class menu_operator
 	 * @param int   $depth
 	 * @param array &$result
 	 * @param array $excluded_ids Map of excluded item IDs
+	 * @param int   $subtree_height
+	 * @param array $all_map
 	 */
-	protected function build_parent_tree($items, $parent_id, $depth, &$result, array $excluded_ids = [])
+	protected function build_parent_tree($items, $parent_id, $depth, &$result, array $excluded_ids = [], $subtree_height = 0, array $all_map = [])
 	{
 		foreach ($items as $item)
 		{
@@ -214,9 +314,17 @@ class menu_operator
 
 			if ((int) $item['parent_id'] === (int) $parent_id)
 			{
-				$prefix = str_repeat('   ', $depth) . ($depth > 0 ? '└-- ' : '');
-				$result[$id] = $prefix . $item['item_name'];
-				$this->build_parent_tree($items, $id, $depth + 1, $result, $excluded_ids);
+				$candidate_level = $depth + 1;
+				if (($candidate_level + 1 + $subtree_height) <= 3)
+				{
+					$prefix = str_repeat('   ', $depth) . ($depth > 0 ? '└-- ' : '');
+					$result[$id] = $prefix . $item['item_name'];
+
+					if ($depth < 1)
+					{
+						$this->build_parent_tree($items, $id, $depth + 1, $result, $excluded_ids, $subtree_height, $all_map);
+					}
+				}
 			}
 		}
 	}
@@ -230,13 +338,37 @@ class menu_operator
 	 */
 	public function save_item($data, $item_id = 0)
 	{
+		$parent_id = (int) ($data['parent_id'] ?? 0);
+		if ($parent_id > 0)
+		{
+			$all_map = $this->get_items_by_id_map();
+			$parent_level = $this->get_item_level($parent_id, $all_map);
+			$subtree_height = ($item_id > 0) ? $this->get_subtree_height($item_id, $all_map) : 0;
+
+			if (($parent_level + 1 + $subtree_height) > 3)
+			{
+				return false;
+			}
+		}
+
+		$hide_groups = $data['item_hide_groups'] ?? '';
+		if (is_array($hide_groups))
+		{
+			$hide_groups = implode(',', array_filter(array_map('intval', $hide_groups)));
+		}
+		else
+		{
+			$hide_groups = (string) $hide_groups;
+		}
+
 		$sql_ary = [
-			'parent_id'		=> (int) ($data['parent_id'] ?? 0),
-			'item_name'		=> (string) ($data['item_name'] ?? ''),
-			'item_url'		=> (string) ($data['item_url'] ?? ''),
-			'item_icon'		=> (string) ($data['item_icon'] ?? ''),
-			'item_target'	=> (string) ($data['item_target'] ?? '_self'),
-			'item_enabled'	=> (int) ($data['item_enabled'] ?? 1),
+			'parent_id'			=> $parent_id,
+			'item_name'			=> (string) ($data['item_name'] ?? ''),
+			'item_url'			=> (string) ($data['item_url'] ?? ''),
+			'item_icon'			=> (string) ($data['item_icon'] ?? ''),
+			'item_target'		=> (string) ($data['item_target'] ?? '_self'),
+			'item_enabled'		=> (int) ($data['item_enabled'] ?? 1),
+			'item_hide_groups'	=> $hide_groups,
 		];
 
 		if ($item_id > 0)
@@ -276,6 +408,8 @@ class menu_operator
 			return;
 		}
 
+		$all_map = $this->get_items_by_id_map();
+
 		$this->db->sql_transaction('begin');
 
 		foreach ($items as $item)
@@ -286,6 +420,16 @@ class menu_operator
 
 			if ($id > 0)
 			{
+				if ($parent_id > 0)
+				{
+					$parent_level = $this->get_item_level($parent_id, $all_map);
+					$subtree_height = $this->get_subtree_height($id, $all_map);
+					if (($parent_level + 1 + $subtree_height) > 3)
+					{
+						$parent_id = (int) ($all_map[$id]['parent_id'] ?? 0);
+					}
+				}
+
 				$sql = 'UPDATE ' . $this->table_name . '
 					SET parent_id = ' . (int) $parent_id . ',
 						item_order = ' . (int) $order . '
@@ -471,6 +615,9 @@ class menu_operator
 	 */
 	public function get_visible_menu_tree()
 	{
+		$user_id = isset($this->user->data['user_id']) ? (int) $this->user->data['user_id'] : 0;
+		$user_groups = ($user_id > 0) ? $this->get_user_group_ids($user_id) : [];
+
 		$sql = 'SELECT * FROM ' . $this->table_name . '
 			WHERE item_enabled = 1
 			ORDER BY item_order ASC, item_id ASC';
@@ -479,6 +626,15 @@ class menu_operator
 		$all_items = [];
 		while ($row = $this->db->sql_fetchrow($result))
 		{
+			if (!empty($row['item_hide_groups']))
+			{
+				$hidden_groups = array_map('intval', explode(',', $row['item_hide_groups']));
+				if (!empty(array_intersect($user_groups, $hidden_groups)))
+				{
+					continue;
+				}
+			}
+
 			$row['formatted_url'] = $this->format_url($row['item_url']);
 			$all_items[$row['item_id']] = $row;
 			$all_items[$row['item_id']]['children'] = [];
@@ -499,6 +655,75 @@ class menu_operator
 		}
 
 		return $tree;
+	}
+
+	/**
+	 * Get list of group IDs for a user.
+	 *
+	 * @param int $user_id
+	 * @return array
+	 */
+	public function get_user_group_ids($user_id)
+	{
+		$user_id = (int) $user_id;
+		if ($user_id <= 0)
+		{
+			return [];
+		}
+
+		$groups = [];
+		$sql = 'SELECT group_id FROM ' . USER_GROUP_TABLE . '
+			WHERE user_id = ' . (int) $user_id . '
+				AND user_pending = 0';
+		$result = $this->db->sql_query($sql);
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$groups[] = (int) $row['group_id'];
+		}
+		$this->db->sql_freeresult($result);
+
+		return $groups;
+	}
+
+	/**
+	 * Get list of all board groups formatted for ACP checkboxes.
+	 *
+	 * @param string|array $selected
+	 * @return array List of group arrays with group_id, group_name, selected
+	 */
+	public function get_all_groups($selected = '')
+	{
+		if (is_string($selected))
+		{
+			$selected = !empty($selected) ? array_map('intval', explode(',', $selected)) : [];
+		}
+		else if (is_array($selected))
+		{
+			$selected = array_map('intval', $selected);
+		}
+		else
+		{
+			$selected = [];
+		}
+
+		$sql = 'SELECT group_id, group_name, group_type FROM ' . GROUPS_TABLE . "
+			WHERE group_name <> 'BOTS'
+			ORDER BY group_name ASC";
+		$result = $this->db->sql_query($sql);
+		$groups = [];
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$g_id = (int) $row['group_id'];
+			$g_name = ($row['group_type'] == 3 && isset($this->user->lang['G_' . $row['group_name']])) ? $this->user->lang['G_' . $row['group_name']] : $row['group_name'];
+			$groups[] = [
+				'group_id'   => $g_id,
+				'group_name' => $g_name,
+				'selected'   => in_array($g_id, $selected, true),
+			];
+		}
+		$this->db->sql_freeresult($result);
+
+		return $groups;
 	}
 
 	/**

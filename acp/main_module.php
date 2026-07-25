@@ -70,6 +70,7 @@ class main_module
 				'item_icon'		=> $request->variable('item_icon', ''),
 				'item_target'	=> $request->variable('item_target', '_self'),
 				'item_enabled'	=> $request->variable('item_enabled', 1),
+				'item_hide_groups' => $request->variable('item_hide_groups', [0]),
 			];
 
 			if (empty($item_data['item_name']))
@@ -77,7 +78,11 @@ class main_module
 				trigger_error($language->lang('MENU_ITEM_NAME_REQUIRED') . adm_back_link($this->u_action), E_USER_WARNING);
 			}
 
-			$menu_operator->save_item($item_data, $item_id);
+			$saved_id = $menu_operator->save_item($item_data, $item_id);
+			if ($saved_id === false)
+			{
+				trigger_error($language->lang('MENU_MAX_DEPTH_REACHED') . adm_back_link($this->u_action), E_USER_WARNING);
+			}
 
 			$msg = ($item_id > 0) ? $language->lang('MENU_ITEM_UPDATED') : $language->lang('MENU_ITEM_ADDED');
 			trigger_error($msg . adm_back_link($this->u_action));
@@ -232,6 +237,18 @@ class main_module
 				'ID'		=> $p_id,
 				'NAME'		=> $p_name,
 				'SELECTED'	=> (!empty($edit_item) && $edit_item['parent_id'] == $p_id),
+			]);
+		}
+
+		// Populate groups checkboxes for form
+		$selected_groups = !empty($edit_item) ? ($edit_item['item_hide_groups'] ?? '') : '';
+		$all_groups = $menu_operator->get_all_groups($selected_groups);
+		foreach ($all_groups as $group)
+		{
+			$template->assign_block_vars('groups', [
+				'ID'			=> $group['group_id'],
+				'NAME'			=> $group['group_name'],
+				'S_SELECTED'	=> $group['selected'],
 			]);
 		}
 
