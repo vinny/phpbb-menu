@@ -69,8 +69,10 @@ class migration_test extends \PHPUnit\Framework\TestCase
 		$data = $migration->update_data();
 
 		$this->assertIsArray($data);
-		$this->assertCount(1, $data);
+		$this->assertCount(2, $data);
 		$this->assertEquals('config.add', $data[0][0]);
 		$this->assertEquals('vinny_menu_enable', $data[0][1][0]);
+		$this->assertEquals('config.add', $data[1][0]);
+		$this->assertEquals('vinny_menu_search', $data[1][1][0]);
 	}
 }

@@ -21,6 +21,6 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, [
 	'ACP_HEADER_MENU_TITLE'		=> 'Header Menu',
-	'ACP_HEADER_MENU_MANAGE'	=> 'Manage Header Menu',
+	'ACP_HEADER_MENU_MANAGE'	=> 'Manage',
 	'ACP_HEADER_MENU_EXPLAIN'	=> 'Create, reorder, and manage custom navigation menu items.',
 ]);

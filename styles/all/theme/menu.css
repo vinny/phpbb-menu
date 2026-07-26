@@ -16,6 +16,9 @@
 }
 
 .vinny-header-menu .inner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 	padding: 0 6px;
 }
 
@@ -171,15 +174,19 @@
 	.vinny-header-menu {
 		margin-left: -5px;
 		margin-right: -5px;
-		border-radius: 0;
+		border-radius: 0 0 7px 7px;
 	}
 
 	.vinny-header-menu .inner {
 		padding: 0;
+		flex-direction: column;
+		width: 100%;
+		align-items: stretch;
 	}
 
 	.vinny-header-menu .vinny-mobile-bar {
 		display: block;
+		width: 100%;
 		padding: 0;
 	}
 
@@ -202,28 +209,30 @@
 	}
 
 	.vinny-header-menu .nav-main {
+		width: 100%;
 		max-height: 0;
 		opacity: 0;
 		overflow: hidden;
 		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+		align-items: stretch;
+		transform: translateY(-10px);
+		transition: max-height 0.5s ease-in-out, opacity 0.4s ease-in-out, transform 0.5s ease-in-out;
 		padding: 0;
 	}
 
 	.vinny-header-menu.responsive-open .nav-main {
-		max-height: 1000px;
+		max-height: 400px;
 		opacity: 1;
+		transform: translateY(0);
 		padding-bottom: 0;
 	}
 
 	.vinny-header-menu .header-menu-item {
 		width: 100%;
 		flex-direction: column;
-		align-items: center;
-		justify-content: center;
+		align-items: stretch;
 		text-align: center;
+		box-sizing: border-box;
 	}
 
 	.vinny-header-menu .header-menu-item > a.nav-link {

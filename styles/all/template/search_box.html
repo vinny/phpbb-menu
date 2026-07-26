@@ -1,0 +1,16 @@
+{% if S_DISPLAY_SEARCH and not S_IN_SEARCH and S_VINNY_MENU_SEARCH %}
+	<div class="vinny-menu-search-box" role="search">
+		<form action="{{ U_SEARCH }}" method="get" id="vinny_menu_search_form">
+			<fieldset>
+				<div class="vinny-search-input-wrapper">
+					<button type="submit" class="vinny-search-btn" title="{{ lang('SEARCH')|e('html_attr') }}">
+						<i class="icon fa-search fa-fw vinny-search-icon" aria-hidden="true"></i>
+						<span class="sr-only">{{ lang('SEARCH') }}</span>
+					</button>
+					<input name="keywords" id="vinny_menu_keywords" type="search" maxlength="128" title="{{ lang('SEARCH_KEYWORDS')|e('html_attr') }}" class="inputbox search tiny vinny-menu-search-input" size="18" value="{{ SEARCH_WORDS|e('html_attr') }}" placeholder="{{ lang('SEARCH_MINI')|e('html_attr') }}" />
+				</div>
+				{{ S_SEARCH_HIDDEN_FIELDS }}
+			</fieldset>
+		</form>
+	</div>
+{% endif %}

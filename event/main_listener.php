@@ -94,8 +94,11 @@ class main_listener implements EventSubscriberInterface
 
 		$header_items = $this->menu_operator->get_visible_menu_tree();
 
+		$search_enabled = !empty($this->config['vinny_menu_search']);
+
 		$this->template->assign_vars([
-			'S_VINNY_MENU_ENABLED' => true,
+			'S_VINNY_MENU_ENABLED'	=> true,
+			'S_VINNY_MENU_SEARCH'	=> $search_enabled,
 		]);
 
 		// Assign Header Menu Items

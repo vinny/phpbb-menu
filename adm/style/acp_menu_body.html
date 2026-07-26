@@ -5,6 +5,10 @@
 
 <h1>{{ lang('ACP_HEADER_MENU_TITLE') }}</h1>
 <p>{{ lang('ACP_HEADER_MENU_EXPLAIN') }}</p>
+<p>
+	{{ lang('MENU_SUPPORT_STAR')|raw }}<br />
+	{{ lang('MENU_SUPPORT_DONATE')|raw }}
+</p>
 
 {% if S_EDIT %}
 
@@ -37,7 +41,7 @@
 				<dd><input type="text" id="item_icon" name="item_icon" value="{{ ITEM_ICON|e('html_attr') }}" maxlength="100" placeholder="{{ lang('MENU_ITEM_ICON_PLACEHOLDER')|e('html_attr') }}" /></dd>
 			</dl>
 			<dl>
-				<dt><label for="item_target">{{ lang('MENU_ITEM_TARGET') }}{{ lang('COLON') }}</label></dt>
+				<dt><label for="item_target">{{ lang('MENU_ITEM_TARGET') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_TARGET_EXPLAIN') }}</span></dt>
 				<dd>
 					<select id="item_target" name="item_target">
 						<option value="_self"{% if ITEM_TARGET == '_self' %} selected="selected"{% endif %}>{{ lang('MENU_TARGET_SELF') }}</option>
@@ -46,7 +50,7 @@
 				</dd>
 			</dl>
 			<dl>
-				<dt><label for="item_enabled">{{ lang('MENU_ITEM_ENABLED') }}{{ lang('COLON') }}</label></dt>
+				<dt><label for="item_enabled">{{ lang('MENU_ITEM_ENABLED') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_ENABLED_EXPLAIN') }}</span></dt>
 				<dd>
 					<label><input type="radio" class="radio" name="item_enabled" value="1"{% if ITEM_ENABLED %} checked="checked"{% endif %} /> {{ lang('YES') }}</label>
 					<label><input type="radio" class="radio" name="item_enabled" value="0"{% if not ITEM_ENABLED %} checked="checked"{% endif %} /> {{ lang('NO') }}</label>
@@ -80,6 +84,13 @@
 				<dd>
 					<label><input type="radio" class="radio" name="vinny_menu_enable" value="1"{% if S_MENU_ENABLE %} checked="checked"{% endif %} /> {{ lang('YES') }}</label>
 					<label><input type="radio" class="radio" name="vinny_menu_enable" value="0"{% if not S_MENU_ENABLE %} checked="checked"{% endif %} /> {{ lang('NO') }}</label>
+				</dd>
+			</dl>
+			<dl>
+				<dt><label for="vinny_menu_search">{{ lang('MENU_SEARCH') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_SEARCH_EXPLAIN') }}</span></dt>
+				<dd>
+					<label><input type="radio" class="radio" name="vinny_menu_search" value="1"{% if S_MENU_SEARCH %} checked="checked"{% endif %} /> {{ lang('YES') }}</label>
+					<label><input type="radio" class="radio" name="vinny_menu_search" value="0"{% if not S_MENU_SEARCH %} checked="checked"{% endif %} /> {{ lang('NO') }}</label>
 				</dd>
 			</dl>
 		</fieldset>
@@ -120,7 +131,7 @@
 				<dd><input type="text" id="item_icon" name="item_icon" value="" maxlength="100" placeholder="{{ lang('MENU_ITEM_ICON_PLACEHOLDER')|e('html_attr') }}" /></dd>
 			</dl>
 			<dl>
-				<dt><label for="item_target">{{ lang('MENU_ITEM_TARGET') }}{{ lang('COLON') }}</label></dt>
+				<dt><label for="item_target">{{ lang('MENU_ITEM_TARGET') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_TARGET_EXPLAIN') }}</span></dt>
 				<dd>
 					<select id="item_target" name="item_target">
 						<option value="_self" selected="selected">{{ lang('MENU_TARGET_SELF') }}</option>
@@ -129,7 +140,7 @@
 				</dd>
 			</dl>
 			<dl>
-				<dt><label for="item_enabled">{{ lang('MENU_ITEM_ENABLED') }}{{ lang('COLON') }}</label></dt>
+				<dt><label for="item_enabled">{{ lang('MENU_ITEM_ENABLED') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_ENABLED_EXPLAIN') }}</span></dt>
 				<dd>
 					<label><input type="radio" class="radio" name="item_enabled" value="1" checked="checked" /> {{ lang('YES') }}</label>
 					<label><input type="radio" class="radio" name="item_enabled" value="0" /> {{ lang('NO') }}</label>

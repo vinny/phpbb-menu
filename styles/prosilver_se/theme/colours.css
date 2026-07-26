@@ -2,11 +2,11 @@
 
 .vinny-header-menu {
 	background-color: #7C8891;
-	background-image: -webkit-linear-gradient(top, #6E777F 0%, #505C65 1%, #56626B 20%, #737F88 75%, #7C8891 100%);
-	background-image: linear-gradient(to bottom, #6E777F 0%, #505C65 1%, #56626B 20%, #737F88 75%, #7C8891 100%);
+	background-image: -webkit-linear-gradient(top, #7C8891 0%, #737F88 25%, #56626B 80%, #505C65 100%);
+	background-image: linear-gradient(to bottom, #7C8891 0%, #737F88 25%, #56626B 80%, #505C65 100%);
 	background-repeat: repeat-x;
 	border-top: 1px solid rgba(255, 255, 255, 0.25);
-	border-bottom: 1px solid #505C65;
+	border-bottom: 1px solid #3d4750;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 

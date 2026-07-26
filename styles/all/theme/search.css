@@ -1,0 +1,107 @@
+/* Header Menu Extension - Search Box Override */
+
+.search-header {
+	display: none !important;
+}
+
+/* Menu Search Box Container (Desktop) */
+.vinny-menu-search-box {
+	display: flex;
+	align-items: center;
+	margin-left: auto;
+	padding-right: 8px;
+}
+
+.vinny-menu-search-box form {
+	margin: 0;
+	padding: 0;
+}
+
+.vinny-menu-search-box fieldset {
+	display: flex;
+	align-items: center;
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+.vinny-search-input-wrapper {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.vinny-search-btn {
+	position: absolute;
+	left: 6px;
+	top: 50%;
+	transform: translateY(-50%);
+	background: transparent;
+	border: none;
+	padding: 0;
+	margin: 0;
+	cursor: pointer;
+	color: #666;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 2;
+	outline: none;
+}
+
+.vinny-search-btn:hover {
+	color: #111;
+}
+
+.vinny-search-btn .vinny-search-icon {
+	font-size: 11px;
+}
+
+.vinny-menu-search-input {
+	height: 24px !important;
+	line-height: 24px !important;
+	padding: 0 10px 0 26px !important;
+	border-radius: 12px !important;
+	border: 1px solid #ccc !important;
+	background-color: #fff !important;
+	color: #333 !important;
+	font-size: 11px !important;
+	outline: none;
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08) !important;
+	transition: all 0.2s ease-in-out;
+	box-sizing: border-box;
+}
+
+.vinny-menu-search-input:focus {
+	border-color: #12a5f4 !important;
+	box-shadow: 0 0 4px rgba(18, 165, 244, 0.4) !important;
+}
+
+/* Mobile Responsiveness for Search Box */
+@media (max-width: 700px) {
+	.vinny-menu-search-box {
+		display: none;
+		width: 100%;
+		justify-content: center;
+		margin-left: 0;
+		padding: 10px 14px;
+		box-sizing: border-box;
+		border-top: 1px solid rgba(255, 255, 255, 0.15);
+		opacity: 0;
+		transition: opacity 0.4s ease-in-out;
+	}
+
+	.vinny-header-menu.responsive-open .vinny-menu-search-box {
+		display: flex;
+		opacity: 1;
+	}
+
+	.vinny-search-input-wrapper {
+		width: 220px;
+		justify-content: center;
+	}
+
+	.vinny-menu-search-input {
+		width: 100% !important;
+	}
+}

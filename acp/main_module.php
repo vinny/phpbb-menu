@@ -52,6 +52,7 @@ class main_module
 			}
 
 			$config->set('vinny_menu_enable', $request->variable('vinny_menu_enable', 1));
+			$config->set('vinny_menu_search', $request->variable('vinny_menu_search', 0));
 
 			trigger_error($language->lang('MENU_SETTINGS_SAVED') . adm_back_link($this->u_action));
 		}
@@ -261,6 +262,7 @@ class main_module
 			'U_ACTION'			=> $this->u_action,
 			'U_REORDER_AJAX'	=> $u_reorder_ajax,
 			'S_MENU_ENABLE'		=> (bool) ($config['vinny_menu_enable'] ?? 1),
+			'S_MENU_SEARCH'		=> (bool) ($config['vinny_menu_search'] ?? 0),
 			'S_EDIT'			=> !empty($edit_item),
 			'ITEM_ID'			=> !empty($edit_item) ? $edit_item['item_id'] : 0,
 			'ITEM_NAME'			=> !empty($edit_item) ? $edit_item['item_name'] : '',

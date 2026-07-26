@@ -13,6 +13,7 @@ Header Menu extension for phpBB 3.3+ allowing administrators to create, reorder,
 - **Group-Based Visibility:** Hide specific menu items from selected user groups.
 - **Enable/Disable Toggle**: Quickly enable or disable individual menu items, or turn off the entire menu globally from the ACP settings.
 - **Responsive Design**: Smooth mobile toggle button (☰ Menu).
+- **Search Box**: Includes a search box in the header menu.
 
 
 ## Installation
@@ -25,10 +26,10 @@ Header Menu extension for phpBB 3.3+ allowing administrators to create, reorder,
 
 ## Screenshots
 
-![Screenshot 1](https://i.ibb.co/wrRgf8sj/Captura-de-tela-2026-07-23-142315.png)
-![Screenshot 2](https://i.ibb.co/PsjXyDYB/Captura-de-tela-2026-07-25-195719.png)
-![Screenshot 3](https://i.ibb.co/Myvn3dBY/Captura-de-tela-2026-07-23-143617.png)
-![Screenshot 4](https://i.ibb.co/5XDgncmy/Captura-de-tela-2026-07-23-143628.png)
+![Screenshot 1](https://i.ibb.co/1YJ0tPp2/image.png)
+![Screenshot 2](https://i.ibb.co/0ynMKFM3/1.png)
+![Screenshot 3](https://i.ibb.co/Mkw9PpGc/image.png)
+![Screenshot 4](https://i.ibb.co/LhZfzmmF/image.png)
 
 
 ## Support

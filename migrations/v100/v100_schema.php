@@ -23,7 +23,7 @@ class v100_schema extends \phpbb\db\migration\migration
 	 */
 	public function effectively_installed()
 	{
-		return $this->db_tools->sql_table_exists($this->table_prefix . 'vinny_menu_items') && isset($this->config['vinny_menu_enable']);
+		return $this->db_tools->sql_table_exists($this->table_prefix . 'vinny_menu_items') && isset($this->config['vinny_menu_enable']) && isset($this->config['vinny_menu_search']);
 	}
 
 	/**
@@ -90,6 +90,7 @@ class v100_schema extends \phpbb\db\migration\migration
 	{
 		return [
 			['config.add', ['vinny_menu_enable', 1]],
+			['config.add', ['vinny_menu_search', 0]],
 		];
 	}
 
@@ -102,6 +103,7 @@ class v100_schema extends \phpbb\db\migration\migration
 	{
 		return [
 			['config.remove', ['vinny_menu_enable']],
+			['config.remove', ['vinny_menu_search']],
 		];
 	}
 }

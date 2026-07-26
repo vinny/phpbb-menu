@@ -85,4 +85,24 @@ class main_listener_test extends \PHPUnit\Framework\TestCase
 
 		$this->listener->render_menu();
 	}
+
+	public function test_render_menu_enabled_with_search()
+	{
+		$this->config->expects($this->any())
+			->method('offsetExists')
+			->willReturn(true);
+
+		$this->config->expects($this->any())
+			->method('offsetGet')
+			->willReturnOnConsecutiveCalls(1, 1);
+
+		$this->operator->expects($this->once())
+			->method('get_visible_menu_tree')
+			->willReturn([]);
+
+		$this->template->expects($this->once())
+			->method('assign_vars');
+
+		$this->listener->render_menu();
+	}
 }
