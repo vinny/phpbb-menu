@@ -97,8 +97,17 @@ class main_listener implements EventSubscriberInterface
 		$search_enabled = !empty($this->config['vinny_menu_search']);
 
 		$this->template->assign_vars([
-			'S_VINNY_MENU_ENABLED'	=> true,
-			'S_VINNY_MENU_SEARCH'	=> $search_enabled,
+			'S_VINNY_MENU_ENABLED'			=> true,
+			'S_VINNY_MENU_SEARCH'			=> $search_enabled,
+			'VINNY_MENU_BG_COLOUR'			=> $this->config['vinny_menu_bg_colour'],
+			'VINNY_MENU_BG_HOVER_COLOUR'	=> $this->config['vinny_menu_bg_hover_colour'],
+			'VINNY_MENU_TEXT_COLOUR'		=> $this->config['vinny_menu_text_colour'],
+			'VINNY_MENU_TEXT_HOVER_COLOUR'	=> $this->config['vinny_menu_text_hover_colour'],
+			'VINNY_MENU_SUB_BG_COLOUR'		=> $this->config['vinny_menu_sub_bg_colour'],
+			'VINNY_MENU_SUB_TEXT_COLOUR'	=> $this->config['vinny_menu_sub_text_colour'],
+			'VINNY_MENU_SUB_BG_HOVER'		=> $this->config['vinny_menu_sub_bg_hover'],
+			'VINNY_MENU_SUB_TEXT_HOVER'		=> $this->config['vinny_menu_sub_text_hover'],
+			'VINNY_MENU_SUB_DESC_COLOUR'	=> $this->config['vinny_menu_sub_desc_colour'],
 		]);
 
 		// Assign Header Menu Items
@@ -107,6 +116,7 @@ class main_listener implements EventSubscriberInterface
 			$block_data = [
 				'ID'			=> $item['item_id'],
 				'NAME'			=> $item['item_name'],
+				'DESC'			=> $item['item_desc'] ?? '',
 				'URL'			=> $item['formatted_url'],
 				'ICON'			=> $item['item_icon'],
 				'TARGET'		=> $item['item_target'],
@@ -122,6 +132,7 @@ class main_listener implements EventSubscriberInterface
 					$this->template->assign_block_vars('vinny_menu_header.children', [
 						'ID'			=> $child['item_id'],
 						'NAME'			=> $child['item_name'],
+						'DESC'			=> $child['item_desc'] ?? '',
 						'URL'			=> $child['formatted_url'],
 						'ICON'			=> $child['item_icon'],
 						'TARGET'		=> $child['item_target'],
@@ -135,6 +146,7 @@ class main_listener implements EventSubscriberInterface
 							$this->template->assign_block_vars('vinny_menu_header.children.subchildren', [
 								'ID'		=> $subchild['item_id'],
 								'NAME'		=> $subchild['item_name'],
+								'DESC'		=> $subchild['item_desc'] ?? '',
 								'URL'		=> $subchild['formatted_url'],
 								'ICON'		=> $subchild['item_icon'],
 								'TARGET'	=> $subchild['item_target'],

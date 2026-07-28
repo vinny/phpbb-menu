@@ -25,13 +25,13 @@
 	border: none;
 }
 
-.vinny-search-input-wrapper {
+.vinny-menu-search-input-wrapper {
 	position: relative;
 	display: flex;
 	align-items: center;
 }
 
-.vinny-search-btn {
+.vinny-menu-search-btn {
 	position: absolute;
 	left: 6px;
 	top: 50%;
@@ -49,11 +49,11 @@
 	outline: none;
 }
 
-.vinny-search-btn:hover {
+.vinny-menu-search-btn:hover {
 	color: #111;
 }
 
-.vinny-search-btn .vinny-search-icon {
+.vinny-menu-search-btn .vinny-menu-search-icon {
 	font-size: 11px;
 }
 
@@ -96,7 +96,7 @@
 		opacity: 1;
 	}
 
-	.vinny-search-input-wrapper {
+	.vinny-menu-search-input-wrapper {
 		width: 220px;
 		justify-content: center;
 	}

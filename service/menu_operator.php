@@ -318,7 +318,10 @@ class menu_operator
 				if (($candidate_level + 1 + $subtree_height) <= 3)
 				{
 					$prefix = str_repeat('   ', $depth) . ($depth > 0 ? '└-- ' : '');
-					$result[$id] = $prefix . $item['item_name'];
+					$result[$id] = [
+						'name'  => $prefix . $item['item_name'],
+						'level' => $candidate_level,
+					];
 
 					if ($depth < 1)
 					{
@@ -332,23 +335,41 @@ class menu_operator
 	/**
 	 * Save (insert or update) a menu item.
 	 *
-	 * @param array $data
-	 * @param int   $item_id
-	 * @return int
+	 * @param array $data Item field values
+	 * @param int   $item_id 0 to insert, >0 to update
+	 * @return int|bool Saved item_id or false if max depth exceeded
 	 */
-	public function save_item($data, $item_id = 0)
+	public function save_item(array $data, $item_id = 0)
 	{
+		$item_id = (int) $item_id;
 		$parent_id = (int) ($data['parent_id'] ?? 0);
+
+		// Prevent self-parenting
+		if ($item_id > 0 && $parent_id === $item_id)
+		{
+			$parent_id = 0;
+		}
+
+		// Depth restriction: max depth = 3 levels
 		if ($parent_id > 0)
 		{
-			$all_map = $this->get_items_by_id_map();
-			$parent_level = $this->get_item_level($parent_id, $all_map);
-			$subtree_height = ($item_id > 0) ? $this->get_subtree_height($item_id, $all_map) : 0;
+			$parent_level = $this->get_item_level($parent_id);
+
+			$subtree_height = 0;
+			if ($item_id > 0)
+			{
+				$all_map = $this->get_items_by_id_map();
+				$subtree_height = $this->get_subtree_height($item_id, $all_map);
+			}
 
 			if (($parent_level + 1 + $subtree_height) > 3)
 			{
 				return false;
 			}
+		}
+		else
+		{
+			$parent_level = 0;
 		}
 
 		$hide_groups = $data['item_hide_groups'] ?? '';
@@ -361,6 +382,13 @@ class menu_operator
 			$hide_groups = (string) $hide_groups;
 		}
 
+		// Only Level 2 and Level 3 items (children of Level 1 or Level 2 parent) can have item_desc (max 60 chars)
+		$item_desc = ($parent_level === 1 || $parent_level === 2) ? (string) ($data['item_desc'] ?? '') : '';
+		if (utf8_strlen($item_desc) > 60)
+		{
+			$item_desc = utf8_substr($item_desc, 0, 60);
+		}
+
 		$sql_ary = [
 			'parent_id'			=> $parent_id,
 			'item_name'			=> (string) ($data['item_name'] ?? ''),
@@ -369,6 +397,7 @@ class menu_operator
 			'item_target'		=> (string) ($data['item_target'] ?? '_self'),
 			'item_enabled'		=> (int) ($data['item_enabled'] ?? 1),
 			'item_hide_groups'	=> $hide_groups,
+			'item_desc'			=> $item_desc,
 		];
 
 		if ($item_id > 0)

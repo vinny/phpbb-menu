@@ -56,6 +56,7 @@ class v100_schema extends \phpbb\db\migration\migration
 						'item_order'	=> ['UINT', 0],
 						'item_enabled'	=> ['BOOL', 1],
 						'item_hide_groups' => ['VCHAR:255', ''],
+						'item_desc'		=> ['VCHAR:255', ''],
 					],
 					'PRIMARY_KEY' => 'item_id',
 					'KEYS' => [
@@ -91,6 +92,15 @@ class v100_schema extends \phpbb\db\migration\migration
 		return [
 			['config.add', ['vinny_menu_enable', 1]],
 			['config.add', ['vinny_menu_search', 0]],
+			['config.add', ['vinny_menu_bg_colour', '#12a3eb']],
+			['config.add', ['vinny_menu_bg_hover_colour', '#0076b1']],
+			['config.add', ['vinny_menu_text_colour', '#ffffff']],
+			['config.add', ['vinny_menu_text_hover_colour', '#d31141']],
+			['config.add', ['vinny_menu_sub_bg_colour', '#12a3eb']],
+			['config.add', ['vinny_menu_sub_text_colour', '#ffffff']],
+			['config.add', ['vinny_menu_sub_bg_hover', '#0076b1']],
+			['config.add', ['vinny_menu_sub_text_hover', '#d31141']],
+			['config.add', ['vinny_menu_sub_desc_colour', '#000000']],
 		];
 	}
 
@@ -104,6 +114,15 @@ class v100_schema extends \phpbb\db\migration\migration
 		return [
 			['config.remove', ['vinny_menu_enable']],
 			['config.remove', ['vinny_menu_search']],
+			['config.remove', ['vinny_menu_bg_colour']],
+			['config.remove', ['vinny_menu_bg_hover_colour']],
+			['config.remove', ['vinny_menu_text_colour']],
+			['config.remove', ['vinny_menu_text_hover_colour']],
+			['config.remove', ['vinny_menu_sub_bg_colour']],
+			['config.remove', ['vinny_menu_sub_text_colour']],
+			['config.remove', ['vinny_menu_sub_bg_hover']],
+			['config.remove', ['vinny_menu_sub_text_hover']],
+			['config.remove', ['vinny_menu_sub_desc_colour']],
 		];
 	}
 }

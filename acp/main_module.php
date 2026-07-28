@@ -53,6 +53,15 @@ class main_module
 
 			$config->set('vinny_menu_enable', $request->variable('vinny_menu_enable', 1));
 			$config->set('vinny_menu_search', $request->variable('vinny_menu_search', 0));
+			$config->set('vinny_menu_bg_colour', $request->variable('vinny_menu_bg_colour', ''));
+			$config->set('vinny_menu_bg_hover_colour', $request->variable('vinny_menu_bg_hover_colour', ''));
+			$config->set('vinny_menu_text_colour', $request->variable('vinny_menu_text_colour', ''));
+			$config->set('vinny_menu_text_hover_colour', $request->variable('vinny_menu_text_hover_colour', ''));
+			$config->set('vinny_menu_sub_bg_colour', $request->variable('vinny_menu_sub_bg_colour', ''));
+			$config->set('vinny_menu_sub_text_colour', $request->variable('vinny_menu_sub_text_colour', ''));
+			$config->set('vinny_menu_sub_bg_hover', $request->variable('vinny_menu_sub_bg_hover', ''));
+			$config->set('vinny_menu_sub_text_hover', $request->variable('vinny_menu_sub_text_hover', ''));
+			$config->set('vinny_menu_sub_desc_colour', $request->variable('vinny_menu_sub_desc_colour', ''));
 
 			trigger_error($language->lang('MENU_SETTINGS_SAVED') . adm_back_link($this->u_action));
 		}
@@ -67,6 +76,7 @@ class main_module
 			$item_data = [
 				'parent_id'		=> $request->variable('parent_id', 0),
 				'item_name'		=> $request->variable('item_name', '', true),
+				'item_desc'		=> $request->variable('item_desc', '', true),
 				'item_url'		=> $request->variable('item_url', '', true),
 				'item_icon'		=> $request->variable('item_icon', ''),
 				'item_target'	=> $request->variable('item_target', '_self'),
@@ -232,11 +242,14 @@ class main_module
 		}
 
 		// Populate parent dropdown options for form
-		foreach ($parents as $p_id => $p_name)
+		foreach ($parents as $p_id => $p_data)
 		{
+			$p_name = is_array($p_data) ? $p_data['name'] : $p_data;
+			$p_level = is_array($p_data) ? $p_data['level'] : 1;
 			$template->assign_block_vars('parent_options', [
 				'ID'		=> $p_id,
 				'NAME'		=> $p_name,
+				'LEVEL'		=> $p_level,
 				'SELECTED'	=> (!empty($edit_item) && $edit_item['parent_id'] == $p_id),
 			]);
 		}
@@ -259,18 +272,28 @@ class main_module
 		$u_reorder_ajax = $controller_helper->route('vinny_menu_reorder');
 
 		$template->assign_vars([
-			'U_ACTION'			=> $this->u_action,
-			'U_REORDER_AJAX'	=> $u_reorder_ajax,
-			'S_MENU_ENABLE'		=> (bool) ($config['vinny_menu_enable'] ?? 1),
-			'S_MENU_SEARCH'		=> (bool) ($config['vinny_menu_search'] ?? 0),
-			'S_EDIT'			=> !empty($edit_item),
-			'ITEM_ID'			=> !empty($edit_item) ? $edit_item['item_id'] : 0,
-			'ITEM_NAME'			=> !empty($edit_item) ? $edit_item['item_name'] : '',
-			'ITEM_URL'			=> !empty($edit_item) ? $edit_item['item_url'] : '',
-			'ITEM_ICON'			=> !empty($edit_item) ? $edit_item['item_icon'] : '',
-			'ITEM_TARGET'		=> !empty($edit_item) ? $edit_item['item_target'] : '_self',
-			'ITEM_ENABLED'		=> !empty($edit_item) ? $edit_item['item_enabled'] : 1,
-			'PARENT_ID'			=> !empty($edit_item) ? $edit_item['parent_id'] : 0,
+			'U_ACTION'				=> $this->u_action,
+			'U_REORDER_AJAX'		=> $u_reorder_ajax,
+			'S_MENU_ENABLE'			=> (bool) ($config['vinny_menu_enable'] ?? 1),
+			'S_MENU_SEARCH'			=> (bool) ($config['vinny_menu_search'] ?? 0),
+			'MENU_BG_COLOUR'		=> $config['vinny_menu_bg_colour'],
+			'MENU_BG_HOVER_COLOUR'	=> $config['vinny_menu_bg_hover_colour'],
+			'MENU_TEXT_COLOUR'		=> $config['vinny_menu_text_colour'],
+			'MENU_TEXT_HOVER_COLOUR' => $config['vinny_menu_text_hover_colour'],
+			'MENU_SUB_BG_COLOUR'	=> $config['vinny_menu_sub_bg_colour'],
+			'MENU_SUB_TEXT_COLOUR'	=> $config['vinny_menu_sub_text_colour'],
+			'MENU_SUB_BG_HOVER'		=> $config['vinny_menu_sub_bg_hover'],
+			'MENU_SUB_TEXT_HOVER'	=> $config['vinny_menu_sub_text_hover'],
+			'MENU_SUB_DESC_COLOUR'	=> $config['vinny_menu_sub_desc_colour'],
+			'S_EDIT'				=> !empty($edit_item),
+			'ITEM_ID'				=> !empty($edit_item) ? $edit_item['item_id'] : 0,
+			'ITEM_NAME'				=> !empty($edit_item) ? $edit_item['item_name'] : '',
+			'ITEM_DESC'				=> !empty($edit_item) ? $edit_item['item_desc'] : '',
+			'ITEM_URL'				=> !empty($edit_item) ? $edit_item['item_url'] : '',
+			'ITEM_ICON'				=> !empty($edit_item) ? $edit_item['item_icon'] : '',
+			'ITEM_TARGET'			=> !empty($edit_item) ? $edit_item['item_target'] : '_self',
+			'ITEM_ENABLED'			=> !empty($edit_item) ? $edit_item['item_enabled'] : 1,
+			'PARENT_ID'				=> !empty($edit_item) ? $edit_item['parent_id'] : 0,
 
 			'ICON_MOVE_UP'		=> '<i class="icon acp-icon fa-arrow-up fa-fw" aria-hidden="true" title="' . $language->lang('MOVE_UP') . '"></i>',
 			'ICON_MOVE_DOWN'	=> '<i class="icon acp-icon fa-arrow-down fa-fw" aria-hidden="true" title="' . $language->lang('MOVE_DOWN') . '"></i>',

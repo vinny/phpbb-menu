@@ -26,15 +26,19 @@
 				<dd><input type="text" id="item_url" name="item_url" value="{{ ITEM_URL|e('html_attr') }}" maxlength="255" placeholder="{{ lang('MENU_ITEM_URL_PLACEHOLDER')|e('html_attr') }}" /></dd>
 			</dl>
 			<dl>
-				<dt><label for="parent_id">{{ lang('MENU_ITEM_PARENT') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_PARENT_EXPLAIN') }}</span></dt>
+				<dt><label for="edit_parent_id">{{ lang('MENU_ITEM_PARENT') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_PARENT_EXPLAIN') }}</span></dt>
 				<dd>
-					<select id="parent_id" name="parent_id">
-						<option value="0"{% if PARENT_ID == 0 %} selected="selected"{% endif %}>{{ lang('MENU_ROOT') }}</option>
+					<select id="edit_parent_id" name="parent_id" class="parent-id-select">
+						<option value="0" data-level="0"{% if PARENT_ID == 0 %} selected="selected"{% endif %}>{{ lang('MENU_ROOT') }}</option>
 						{% for parent in loops.parent_options %}
-							<option value="{{ parent.ID }}"{% if parent.SELECTED %} selected="selected"{% endif %}>{{ parent.NAME }}</option>
+							<option value="{{ parent.ID }}" data-level="{{ parent.LEVEL }}"{% if parent.SELECTED %} selected="selected"{% endif %}>{{ parent.NAME }}</option>
 						{% endfor %}
 					</select>
 				</dd>
+			</dl>
+			<dl id="edit_item_desc_row">
+				<dt><label for="item_desc">{{ lang('MENU_ITEM_DESC') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_DESC_EXPLAIN') }}</span></dt>
+				<dd><input type="text" id="item_desc" name="item_desc" value="{{ ITEM_DESC|e('html_attr') }}" maxlength="60" /></dd>
 			</dl>
 			<dl>
 				<dt><label for="item_icon">{{ lang('MENU_ITEM_ICON') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_ICON_EXPLAIN')|raw }}</span></dt>
@@ -95,6 +99,46 @@
 			</dl>
 		</fieldset>
 
+		<fieldset>
+			<legend>{{ lang('MENU_CUSTOM_COLOURS') }}</legend>
+			<dl>
+				<dt><label for="vinny_menu_bg_colour">{{ lang('MENU_BG_COLOUR') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_BG_COLOUR_EXPLAIN') }}</span></dt>
+				<dd><input type="color" id="vinny_menu_bg_colour" name="vinny_menu_bg_colour" value="{{ MENU_BG_COLOUR|e('html_attr') }}" /></dd>
+			</dl>
+			<dl>
+				<dt><label for="vinny_menu_bg_hover_colour">{{ lang('MENU_BG_HOVER_COLOUR') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_BG_HOVER_COLOUR_EXPLAIN') }}</span></dt>
+				<dd><input type="color" id="vinny_menu_bg_hover_colour" name="vinny_menu_bg_hover_colour" value="{{ MENU_BG_HOVER_COLOUR|e('html_attr') }}" /></dd>
+			</dl>
+			<dl>
+				<dt><label for="vinny_menu_text_colour">{{ lang('MENU_TEXT_COLOUR') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_TEXT_COLOUR_EXPLAIN') }}</span></dt>
+				<dd><input type="color" id="vinny_menu_text_colour" name="vinny_menu_text_colour" value="{{ MENU_TEXT_COLOUR|e('html_attr') }}" /></dd>
+			</dl>
+			<dl>
+				<dt><label for="vinny_menu_text_hover_colour">{{ lang('MENU_TEXT_HOVER_COLOUR') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_TEXT_HOVER_COLOUR_EXPLAIN') }}</span></dt>
+				<dd><input type="color" id="vinny_menu_text_hover_colour" name="vinny_menu_text_hover_colour" value="{{ MENU_TEXT_HOVER_COLOUR|e('html_attr') }}" /></dd>
+			</dl>
+			<dl>
+				<dt><label for="vinny_menu_sub_bg_colour">{{ lang('MENU_SUB_BG_COLOUR') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_SUB_BG_COLOUR_EXPLAIN') }}</span></dt>
+				<dd><input type="color" id="vinny_menu_sub_bg_colour" name="vinny_menu_sub_bg_colour" value="{{ MENU_SUB_BG_COLOUR|e('html_attr') }}" /></dd>
+			</dl>
+			<dl>
+				<dt><label for="vinny_menu_sub_text_colour">{{ lang('MENU_SUB_TEXT_COLOUR') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_SUB_TEXT_COLOUR_EXPLAIN') }}</span></dt>
+				<dd><input type="color" id="vinny_menu_sub_text_colour" name="vinny_menu_sub_text_colour" value="{{ MENU_SUB_TEXT_COLOUR|e('html_attr') }}" /></dd>
+			</dl>
+			<dl>
+				<dt><label for="vinny_menu_sub_bg_hover">{{ lang('MENU_SUB_BG_HOVER') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_SUB_BG_HOVER_EXPLAIN') }}</span></dt>
+				<dd><input type="color" id="vinny_menu_sub_bg_hover" name="vinny_menu_sub_bg_hover" value="{{ MENU_SUB_BG_HOVER|e('html_attr') }}" /></dd>
+			</dl>
+			<dl>
+				<dt><label for="vinny_menu_sub_text_hover">{{ lang('MENU_SUB_TEXT_HOVER') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_SUB_TEXT_HOVER_EXPLAIN') }}</span></dt>
+				<dd><input type="color" id="vinny_menu_sub_text_hover" name="vinny_menu_sub_text_hover" value="{{ MENU_SUB_TEXT_HOVER|e('html_attr') }}" /></dd>
+			</dl>
+			<dl>
+				<dt><label for="vinny_menu_sub_desc_colour">{{ lang('MENU_SUB_DESC_COLOUR') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_SUB_DESC_COLOUR_EXPLAIN') }}</span></dt>
+				<dd><input type="color" id="vinny_menu_sub_desc_colour" name="vinny_menu_sub_desc_colour" value="{{ MENU_SUB_DESC_COLOUR|e('html_attr') }}" /></dd>
+			</dl>
+		</fieldset>
+
 		<fieldset class="submit-buttons">
 			<input class="button1" type="submit" id="submit_settings" name="submit_settings" value="{{ lang('SUBMIT')|e('html_attr') }}" />
 			{{ S_FORM_TOKEN }}
@@ -116,15 +160,19 @@
 				<dd><input type="text" id="item_url" name="item_url" value="" maxlength="255" placeholder="{{ lang('MENU_ITEM_URL_PLACEHOLDER')|e('html_attr') }}" /></dd>
 			</dl>
 			<dl>
-				<dt><label for="parent_id">{{ lang('MENU_ITEM_PARENT') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_PARENT_EXPLAIN') }}</span></dt>
+				<dt><label for="add_parent_id">{{ lang('MENU_ITEM_PARENT') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_PARENT_EXPLAIN') }}</span></dt>
 				<dd>
-					<select id="parent_id" name="parent_id">
-						<option value="0" selected="selected">{{ lang('MENU_ROOT') }}</option>
+					<select id="add_parent_id" name="parent_id" class="parent-id-select">
+						<option value="0" data-level="0" selected="selected">{{ lang('MENU_ROOT') }}</option>
 						{% for parent in loops.parent_options %}
-							<option value="{{ parent.ID }}">{{ parent.NAME }}</option>
+							<option value="{{ parent.ID }}" data-level="{{ parent.LEVEL }}">{{ parent.NAME }}</option>
 						{% endfor %}
 					</select>
 				</dd>
+			</dl>
+			<dl id="add_item_desc_row">
+				<dt><label for="add_item_desc">{{ lang('MENU_ITEM_DESC') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_DESC_EXPLAIN') }}</span></dt>
+				<dd><input type="text" id="add_item_desc" name="item_desc" value="" maxlength="60" /></dd>
 			</dl>
 			<dl>
 				<dt><label for="item_icon">{{ lang('MENU_ITEM_ICON') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_ICON_EXPLAIN')|raw }}</span></dt>
@@ -257,3 +305,32 @@
 {% endif %}
 
 {% INCLUDE 'overall_footer.html' %}
+
+<script>
+(function() {
+	function checkDescVisibility(selectEl, rowEl) {
+		if (!selectEl || !rowEl) return;
+		var selectedOpt = selectEl.options[selectEl.selectedIndex];
+		var level = selectedOpt ? selectedOpt.getAttribute('data-level') : '0';
+		if (level === '1' || level === '2') {
+			rowEl.style.display = '';
+		} else {
+			rowEl.style.display = 'none';
+		}
+	}
+
+	var editSelect = document.getElementById('edit_parent_id');
+	var editRow = document.getElementById('edit_item_desc_row');
+	if (editSelect && editRow) {
+		checkDescVisibility(editSelect, editRow);
+		editSelect.addEventListener('change', function() { checkDescVisibility(editSelect, editRow); });
+	}
+
+	var addSelect = document.getElementById('add_parent_id');
+	var addRow = document.getElementById('add_item_desc_row');
+	if (addSelect && addRow) {
+		checkDescVisibility(addSelect, addRow);
+		addSelect.addEventListener('change', function() { checkDescVisibility(addSelect, addRow); });
+	}
+})();
+</script>

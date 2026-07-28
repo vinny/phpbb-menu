@@ -1,12 +1,8 @@
 /* Header Menu Extension - Prosilver Special Edition Colors */
 
 .vinny-header-menu {
-	background-color: #7C8891;
-	background-image: -webkit-linear-gradient(top, #7C8891 0%, #737F88 25%, #56626B 80%, #505C65 100%);
-	background-image: linear-gradient(to bottom, #7C8891 0%, #737F88 25%, #56626B 80%, #505C65 100%);
-	background-repeat: repeat-x;
 	border-top: 1px solid rgba(255, 255, 255, 0.25);
-	border-bottom: 1px solid #3d4750;
+	border-bottom: none;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
@@ -25,13 +21,7 @@
 }
 
 .vinny-header-menu .header-menu-item > a.nav-link {
-	color: #ffffff;
 	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
-}
-
-.vinny-header-menu .header-menu-item:hover > a.nav-link {
-	background-color: rgba(255, 255, 255, 0.18);
-	color: #ffffff;
 }
 
 .vinny-header-menu .header-menu-item > a.nav-link i.menu-arrow {
@@ -45,7 +35,6 @@
 
 /* Level 2 Submenu Dropdown Desktop */
 .vinny-header-menu .vinny-dropdown-menu {
-	background: #ffffff;
 	border: 1px solid #b5bdc3;
 	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
 }
@@ -58,31 +47,17 @@
 	border-bottom: none;
 }
 
-.vinny-header-menu .vinny-dropdown-item > a {
-	color: #333333;
-}
-
 .vinny-header-menu .vinny-dropdown-item > a i.icon {
-	color: #505C65;
+	color: inherit;
 }
 
 .vinny-header-menu .vinny-dropdown-item > a i.submenu-arrow {
-	color: #888888;
-}
-
-.vinny-header-menu .vinny-dropdown-item:hover > a {
-	background-color: #e8ecee;
-	color: #505C65;
-}
-
-.vinny-header-menu .vinny-dropdown-item:hover > a i.submenu-arrow,
-.vinny-header-menu .vinny-dropdown-item.open > a i.submenu-arrow {
-	color: #505C65;
+	color: inherit;
+	opacity: 0.75;
 }
 
 /* Level 3 Sub-Submenu Flyout Desktop */
 .vinny-header-menu .vinny-subdropdown-menu {
-	background: #ffffff;
 	border: 1px solid #b5bdc3;
 	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
 }
@@ -115,22 +90,15 @@
 
 	.vinny-header-menu .vinny-dropdown-menu {
 		border: none;
-		background-color: rgba(255, 255, 255, 0.95);
 		box-shadow: none;
 	}
 
 	.vinny-header-menu .vinny-dropdown-item > a {
-		color: #333333;
 		border-bottom: 1px solid #e8ecee;
-	}
-
-	.vinny-header-menu .vinny-dropdown-item:hover > a {
-		background-color: #e8ecee;
 	}
 
 	.vinny-header-menu .vinny-subdropdown-menu {
 		border: none;
-		background-color: #f0f2f4;
 		box-shadow: none;
 	}
 }
