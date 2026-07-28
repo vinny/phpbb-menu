@@ -25,6 +25,7 @@
         <exclude name="Generic.WhiteSpace.ScopeIndent"/>
         <exclude name="PSR2.ControlStructures.ElseIfDeclaration"/>
         <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.NewlineBeforeOpenBrace"/>
+        <exclude name="PSR12.Files.FileHeader.SpacingAfterTagBlock"/>
     </rule>
 
     <!-- Enforce tab indentation and forbid space indentation -->

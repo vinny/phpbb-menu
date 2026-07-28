@@ -1,5 +1,4 @@
 <?php
-
 /**
 *
 * Header Menu extension for the phpBB Forum Software package.
