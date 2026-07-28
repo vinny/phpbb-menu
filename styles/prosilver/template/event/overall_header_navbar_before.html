@@ -20,6 +20,7 @@
 								{% for child in item.children %}
 									<li class="vinny-dropdown-item{% if child.HAS_CHILDREN %} has-submenu{% endif %}">
 										<a href="{{ child.URL }}" target="{{ child.TARGET }}" role="menuitem" title="{{ child.NAME|e('html_attr') }}">
+											{% if child.ICON %}<i class="icon fa {{ child.ICON }} fa-fw item-icon-left" aria-hidden="true"></i>{% endif %}
 											<span class="item-title-group">
 												<span class="item-title">{{ child.NAME }}</span>
 												{% if child.DESC %}<span class="item-desc">{{ child.DESC }}</span>{% endif %}
@@ -32,6 +33,7 @@
 												{% for subchild in child.subchildren %}
 													<li class="vinny-dropdown-item">
 														<a href="{{ subchild.URL }}" target="{{ subchild.TARGET }}" role="menuitem" title="{{ subchild.NAME|e('html_attr') }}">
+															{% if subchild.ICON %}<i class="icon fa {{ subchild.ICON }} fa-fw item-icon-left" aria-hidden="true"></i>{% endif %}
 															<span class="item-title-group">
 																<span class="item-title">{{ subchild.NAME }}</span>
 																{% if subchild.DESC %}<span class="item-desc">{{ subchild.DESC }}</span>{% endif %}

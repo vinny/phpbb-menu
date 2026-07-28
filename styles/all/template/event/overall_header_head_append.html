@@ -1,7 +1,6 @@
 {% if S_VINNY_MENU_ENABLED and loops.vinny_menu_header|length %}
 	{% if not definition.INCLUDED_VINNY_MENU_CSS %}
 		{% INCLUDECSS '@vinny_menu/menu.css' %}
-		{% INCLUDECSS '@vinny_menu/colours.css' %}
 		{% if S_VINNY_MENU_SEARCH %}
 			{% INCLUDECSS '@vinny_menu/search.css' %}
 		{% endif %}
