@@ -8,9 +8,11 @@ Header Menu extension for phpBB 3.3+ allowing administrators to create, reorder,
 
 - **Custom Navigation Menu**: Easily add, edit, reorder, and delete custom navigation links in the header.
 - **Multi-Level Submenus**: Create multi-tier dropdown menus for structured navigation.
+- **Item Descriptions**: Optional item descriptions for level 2 and level 3 dropdown items.
+- **Custom Colours**: Customise menu background, hover state, and text colours directly from the ACP.
 - **Drag & Drop Reordering**: Real-time drag-and-drop reordering in ACP with instant updates without page reloads.
-- **Link Target & Tooltip Support**: Choose to open links in the current tab or a new tab.
-- **Group-Based Visibility:** Hide specific menu items from selected user groups.
+- **Link Targets**: Choose to open links in the current tab or a new tab.
+- **Group-Based Visibility**: Hide specific menu items from selected user groups.
 - **Enable/Disable Toggle**: Quickly enable or disable individual menu items, or turn off the entire menu globally from the ACP settings.
 - **Responsive Design**: Smooth mobile toggle button (☰ Menu).
 - **Search Box**: Includes a search box in the header menu.
@@ -22,14 +24,6 @@ Header Menu extension for phpBB 3.3+ allowing administrators to create, reorder,
 2. Unzip the contents into the `ext/vinny/menu` directory of your phpBB installation.
 3. Navigate to **ACP -> Customise -> Extension Management -> Manage extensions**.
 4. Click **Enable** under **Header Menu**.
-
-
-## Screenshots
-
-![Screenshot 1](https://i.ibb.co/1YJ0tPp2/image.png)
-![Screenshot 2](https://i.ibb.co/0ynMKFM3/1.png)
-![Screenshot 3](https://i.ibb.co/Mkw9PpGc/image.png)
-![Screenshot 4](https://i.ibb.co/LhZfzmmF/image.png)
 
 
 ## Support
