@@ -637,6 +637,85 @@ class menu_operator
 	}
 
 	/**
+	 * Check if an item should be hidden for given user groups and primary group.
+	 *
+	 * @param array $user_groups All group IDs user belongs to
+	 * @param int   $primary_group User's default/primary group ID
+	 * @param array $hidden_groups Hidden group IDs from item configuration
+	 * @param array $base_groups Base group IDs (REGISTERED, REGISTERED_COPPA)
+	 * @return bool True if item should be hidden, false if visible
+	 */
+	public function is_item_hidden(array $user_groups, $primary_group, array $hidden_groups, array $base_groups = [2, 3])
+	{
+		if (empty($hidden_groups) || empty($user_groups))
+		{
+			return false;
+		}
+
+		$primary_group = (int) $primary_group;
+
+		// User's primary group is in hidden_groups
+		if ($primary_group > 0 && in_array($primary_group, $hidden_groups, true))
+		{
+			// If primary group is a base group (e.g. REGISTERED), check if user has an unhidden secondary group
+			if (in_array($primary_group, $base_groups, true))
+			{
+				$secondary_groups = array_diff($user_groups, $base_groups);
+				$unhidden_secondary = array_diff($secondary_groups, $hidden_groups);
+
+				if (empty($unhidden_secondary))
+				{
+					return true;
+				}
+
+				return false;
+			}
+
+			// Primary group is a specific group (e.g. Administrators or Global Mods) and is marked hidden -> HIDE!
+			return true;
+		}
+
+		// User's primary group is a non-base specific group and is NOT in hidden_groups (e.g. Primary = Administrators) -> VISIBLE!
+		if ($primary_group > 0 && !in_array($primary_group, $base_groups, true))
+		{
+			return false;
+		}
+
+		// Fallback for primary group = base group or 0: check if all non-base user groups are hidden
+		$non_base_user_groups = array_diff($user_groups, $base_groups);
+		if (!empty($non_base_user_groups))
+		{
+			$unhidden_groups = array_diff($non_base_user_groups, $hidden_groups);
+			if (empty($unhidden_groups))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get base registered group IDs (e.g. REGISTERED and REGISTERED_COPPA).
+	 *
+	 * @return array
+	 */
+	public function get_registered_group_ids()
+	{
+		$sql = 'SELECT group_id FROM ' . GROUPS_TABLE . "
+			WHERE group_name IN ('REGISTERED', 'REGISTERED_COPPA')";
+		$result = $this->db->sql_query($sql);
+		$ids = [];
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$ids[] = (int) $row['group_id'];
+		}
+		$this->db->sql_freeresult($result);
+
+		return !empty($ids) ? $ids : [2, 3];
+	}
+
+	/**
 	 * Get structured menu tree for frontend output.
 	 *
 	 * @return array
@@ -644,7 +723,15 @@ class menu_operator
 	public function get_visible_menu_tree()
 	{
 		$user_id = isset($this->user->data['user_id']) ? (int) $this->user->data['user_id'] : 0;
+		$primary_group = isset($this->user->data['group_id']) ? (int) $this->user->data['group_id'] : 0;
 		$user_groups = ($user_id > 0) ? $this->get_user_group_ids($user_id) : [];
+
+		if (empty($user_groups) && $primary_group > 0)
+		{
+			$user_groups = [$primary_group];
+		}
+
+		$base_groups = $this->get_registered_group_ids();
 
 		$sql = 'SELECT * FROM ' . $this->table_name . '
 			WHERE item_enabled = 1
@@ -657,7 +744,7 @@ class menu_operator
 			if (!empty($row['item_hide_groups']))
 			{
 				$hidden_groups = array_map('intval', explode(',', $row['item_hide_groups']));
-				if (!empty(array_intersect($user_groups, $hidden_groups)))
+				if ($this->is_item_hidden($user_groups, $primary_group, $hidden_groups, $base_groups))
 				{
 					continue;
 				}

@@ -189,4 +189,30 @@ class menu_operator_test extends \PHPUnit\Framework\TestCase
 		$this->assertEquals(1, $this->operator->get_subtree_height(2, $items));
 		$this->assertEquals(0, $this->operator->get_subtree_height(3, $items));
 	}
+
+	public function test_is_item_hidden()
+	{
+		// 1. Hide for Registered (2). Regular User (Primary 2) -> HIDDEN
+		$this->assertTrue($this->operator->is_item_hidden([2], 2, [2], [2, 3]));
+
+		// 2. Hide for Registered (2). Administrator (Primary 5, groups [2, 4, 5]) -> VISIBLE
+		$this->assertFalse($this->operator->is_item_hidden([2, 4, 5], 5, [2], [2, 3]));
+
+		// 3. Hide for Global Moderators (4). Administrator (Primary 5, groups [2, 4, 5]) -> VISIBLE
+		$this->assertFalse($this->operator->is_item_hidden([2, 4, 5], 5, [4], [2, 3]));
+
+		// 4. Hide for Global Moderators (4). Global Moderator (Primary 4, groups [2, 4]) -> HIDDEN
+		$this->assertTrue($this->operator->is_item_hidden([2, 4], 4, [4], [2, 3]));
+
+		// 5. Hide for Administrators (5). Administrator (Primary 5, groups [2, 4, 5]) -> HIDDEN
+		$this->assertTrue($this->operator->is_item_hidden([2, 4, 5], 5, [5], [2, 3]));
+
+		// 6. Hide for Guests (1). Guest user (Primary 1, groups [1]) -> HIDDEN
+		$this->assertTrue($this->operator->is_item_hidden([1], 1, [1], [2, 3]));
+
+		// 7. Hide for Guests (1). Registered user (Primary 2, groups [2]) -> VISIBLE
+		$this->assertFalse($this->operator->is_item_hidden([2], 2, [1], [2, 3]));
+	}
 }
+
+
