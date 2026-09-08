@@ -16,7 +16,7 @@
 		$(document).on('click', '.vinny-header-menu .has-dropdown > a, .vinny-header-menu .has-submenu > a', function(e) {
 			var $parent = $(this).parent();
 			var href = $(this).attr('href');
-			var isMobile = $(window).width() <= 700;
+			var isMobile = $(this).closest('.vinny-header-menu').find('.vinny-mobile-bar').is(':visible');
 
 			if (isMobile || href === '#' || !href) {
 				if ($parent.children('.vinny-dropdown-menu, .vinny-subdropdown-menu').length > 0) {

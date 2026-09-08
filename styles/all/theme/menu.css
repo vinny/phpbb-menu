@@ -225,7 +225,7 @@
 	display: none;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 850px), (orientation: landscape) and (max-height: 550px) {
 	.vinny-header-menu {
 		margin-left: -5px;
 		margin-right: -5px;

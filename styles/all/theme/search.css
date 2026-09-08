@@ -78,7 +78,7 @@
 }
 
 /* Mobile Responsiveness for Search Box */
-@media (max-width: 700px) {
+@media (max-width: 850px), (orientation: landscape) and (max-height: 550px) {
 	.vinny-menu-search-box {
 		display: none;
 		width: 100%;
