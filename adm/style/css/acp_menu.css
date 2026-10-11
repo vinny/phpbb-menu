@@ -68,6 +68,13 @@
 	margin-left: 8px;
 }
 
+.nested-item-url .url-preview {
+	color: #105289;
+	text-decoration: underline;
+	cursor: default;
+	user-select: text;
+}
+
 .nested-item-actions {
 	display: flex;
 	align-items: center;

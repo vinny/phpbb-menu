@@ -227,7 +227,7 @@
 							<span class="drag-handle" title="{{ lang('DRAG_TO_REORDER')|e('html_attr') }}"><i class="icon fa fa-arrows fa-fw"></i></span>
 							{% if item.ICON %}<i class="icon fa {{ item.ICON }} fa-fw"></i>{% endif %}
 							<strong>{{ item.NAME }}</strong>
-							<small class="nested-item-url"><a href="{{ item.URL }}" target="_blank" rel="noopener">{{ item.URL }}</a></small>
+							<small class="nested-item-url"><span class="url-preview">{{ item.URL }}</span></small>
 						</div>
 						<div class="nested-item-actions">
 							<a href="{{ item.U_TOGGLE }}" data-ajax="menu_toggle_enabled">
@@ -237,8 +237,8 @@
 									<i class="icon acp-icon status-disabled fa-times-circle fa-fw" aria-hidden="true" title="{{ lang('ENABLE')|e('html_attr') }}"></i>
 								{% endif %}
 							</a>
-							<a href="{{ item.U_EDIT }}">{{ ICON_EDIT|raw }}</a>
-							<a href="{{ item.U_DELETE }}" data-ajax="row_delete">{{ ICON_DELETE|raw }}</a>
+							<a href="{{ item.U_EDIT }}"><i class="icon acp-icon fa-pencil fa-fw" aria-hidden="true" title="{{ lang('EDIT')|e('html_attr') }}"></i></a>
+							<a href="{{ item.U_DELETE }}" data-ajax="row_delete"><i class="icon acp-icon fa-trash fa-fw" aria-hidden="true" title="{{ lang('DELETE')|e('html_attr') }}"></i></a>
 						</div>
 					</div>
 					<ol class="nested-sortable">
@@ -249,7 +249,7 @@
 										<span class="drag-handle" title="{{ lang('DRAG_TO_REORDER')|e('html_attr') }}"><i class="icon fa fa-arrows fa-fw"></i></span>
 										{% if child.ICON %}<i class="icon fa {{ child.ICON }} fa-fw"></i>{% endif %}
 										<strong>{{ child.NAME }}</strong>
-										<small class="nested-item-url"><a href="{{ child.URL }}" target="_blank" rel="noopener">{{ child.URL }}</a></small>
+										<small class="nested-item-url"><span class="url-preview">{{ child.URL }}</span></small>
 									</div>
 									<div class="nested-item-actions">
 										<a href="{{ child.U_TOGGLE }}" data-ajax="menu_toggle_enabled">
@@ -259,8 +259,8 @@
 												<i class="icon acp-icon status-disabled fa-times-circle fa-fw" aria-hidden="true" title="{{ lang('ENABLE')|e('html_attr') }}"></i>
 											{% endif %}
 										</a>
-										<a href="{{ child.U_EDIT }}">{{ ICON_EDIT|raw }}</a>
-										<a href="{{ child.U_DELETE }}" data-ajax="row_delete">{{ ICON_DELETE|raw }}</a>
+										<a href="{{ child.U_EDIT }}"><i class="icon acp-icon fa-pencil fa-fw" aria-hidden="true" title="{{ lang('EDIT')|e('html_attr') }}"></i></a>
+										<a href="{{ child.U_DELETE }}" data-ajax="row_delete"><i class="icon acp-icon fa-trash fa-fw" aria-hidden="true" title="{{ lang('DELETE')|e('html_attr') }}"></i></a>
 									</div>
 								</div>
 								<ol class="nested-sortable">
@@ -271,7 +271,7 @@
 													<span class="drag-handle" title="{{ lang('DRAG_TO_REORDER')|e('html_attr') }}"><i class="icon fa fa-arrows fa-fw"></i></span>
 													{% if subchild.ICON %}<i class="icon fa {{ subchild.ICON }} fa-fw"></i>{% endif %}
 													<strong>{{ subchild.NAME }}</strong>
-													<small class="nested-item-url"><a href="{{ subchild.URL }}" target="_blank" rel="noopener">{{ subchild.URL }}</a></small>
+													<small class="nested-item-url"><span class="url-preview">{{ subchild.URL }}</span></small>
 												</div>
 												<div class="nested-item-actions">
 													<a href="{{ subchild.U_TOGGLE }}" data-ajax="menu_toggle_enabled">
@@ -281,8 +281,8 @@
 															<i class="icon acp-icon status-disabled fa-times-circle fa-fw" aria-hidden="true" title="{{ lang('ENABLE')|e('html_attr') }}"></i>
 														{% endif %}
 													</a>
-													<a href="{{ subchild.U_EDIT }}">{{ ICON_EDIT|raw }}</a>
-													<a href="{{ subchild.U_DELETE }}" data-ajax="row_delete">{{ ICON_DELETE|raw }}</a>
+													<a href="{{ subchild.U_EDIT }}"><i class="icon acp-icon fa-pencil fa-fw" aria-hidden="true" title="{{ lang('EDIT')|e('html_attr') }}"></i></a>
+													<a href="{{ subchild.U_DELETE }}" data-ajax="row_delete"><i class="icon acp-icon fa-trash fa-fw" aria-hidden="true" title="{{ lang('DELETE')|e('html_attr') }}"></i></a>
 												</div>
 											</div>
 										</li>

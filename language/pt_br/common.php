@@ -79,7 +79,7 @@ $lang = array_merge($lang, [
 	'DRAG_TO_REORDER'						=> 'Arraste para reordenar ou alterar nível',
 	'MENU_NO_ORDER_DATA'					=> 'Nenhum dado de ordenação válido foi recebido.',
 	'MENU_HIDE_FOR_GROUPS'					=> 'Ocultar para grupos de usuários',
-	'MENU_HIDE_FOR_GROUPS_EXPLAIN'			=> 'Selecione os grupos que não devem ver este item de menu.',
+	'MENU_HIDE_FOR_GROUPS_EXPLAIN'			=> 'Selecione os grupos que não devem ver este item de menu. A visibilidade é cumulativa: membros que pertencem a qualquer grupo secundário não selecionado ainda verão o item. Para ocultar completamente, selecione todos os grupos aos quais os usuários pertencem.',
 	'MENU_MAX_DEPTH_REACHED'				=> 'O item pai selecionado excede o limite máximo de 3 níveis de profundidade do menu.',
 	'MENU_SUPPORT_STAR'						=> 'Se você gosta desta extensão, por favor dê uma estrela no <a href="https://github.com/vinny/phpbb-menu" target="_blank" rel="noopener"><i class="icon fa fa-github fa-fw" aria-hidden="true"></i>GitHub</a>.',
 	'MENU_SUPPORT_DONATE'					=> 'Se você a considera útil, também pode apoiar o desenvolvimento com uma <a href="https://ko-fi.com/vinny1" target="_blank" rel="noopener"><i class="icon fa fa-heart fa-fw" aria-hidden="true"></i>doação</a> (opcional).',

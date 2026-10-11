@@ -10,6 +10,16 @@
 
 namespace vinny\menu\tests\service;
 
+if (!function_exists('utf8_encode_ucr'))
+{
+	function utf8_encode_ucr($text)
+	{
+		return preg_replace_callback('/[\xF0-\xF4].../', function($m) {
+			return '&#x' . dechex(mb_ord($m[0], 'UTF-8')) . ';';
+		}, $text);
+	}
+}
+
 /**
  * Unit Test for Menu Operator Service
  */
@@ -212,6 +222,41 @@ class menu_operator_test extends \PHPUnit\Framework\TestCase
 
 		// 7. Hide for Guests (1). Registered user (Primary 2, groups [2]) -> VISIBLE
 		$this->assertFalse($this->operator->is_item_hidden([2], 2, [1], [2, 3]));
+	}
+
+	public function test_get_display_url()
+	{
+		$this->assertEquals('#', $this->operator->get_display_url('#'));
+		$this->assertEquals('', $this->operator->get_display_url(''));
+		$this->assertEquals('https://example.com/test', $this->operator->get_display_url('https://example.com/test'));
+		$this->assertEquals('//example.com/cdn', $this->operator->get_display_url('//example.com/cdn'));
+		$this->assertEquals('mailto:test@example.com', $this->operator->get_display_url('mailto:test@example.com'));
+	}
+
+	public function test_save_item_encodes_emojis()
+	{
+		$this->db->expects($this->once())
+			->method('sql_build_array')
+			->with('UPDATE', $this->callback(function($sql_ary) {
+				return strpos($sql_ary['item_name'], '&#') !== false;
+			}))
+			->willReturn("item_name = 'test'");
+
+		$this->db->expects($this->once())
+			->method('sql_query');
+
+		$data = [
+			'parent_id'   => 0,
+			'item_name'   => 'Party 🎉',
+			'item_url'    => 'index.php',
+			'item_icon'   => '',
+			'item_target' => '_self',
+			'item_enabled'=> 1,
+			'item_desc'   => '',
+		];
+
+		$result = $this->operator->save_item($data, 1);
+		$this->assertEquals(1, $result);
 	}
 }
 

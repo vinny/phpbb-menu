@@ -12,6 +12,22 @@ namespace vinny\menu\tests\controller;
 
 use Symfony\Component\HttpFoundation\Request;
 
+if (!function_exists('check_link_hash'))
+{
+	function check_link_hash($token, $link_name)
+	{
+		return $token === 'valid_hash';
+	}
+}
+
+if (!function_exists('generate_link_hash'))
+{
+	function generate_link_hash($link_name)
+	{
+		return 'valid_hash';
+	}
+}
+
 /**
  * Unit Test for AJAX Controller
  */
@@ -31,6 +47,12 @@ class ajax_controller_test extends \PHPUnit\Framework\TestCase
 
 	protected function setUp(): void
 	{
+		global $user;
+		if (isset($user) && is_object($user))
+		{
+			$user->data['hash_vinny_menu_reorder'] = 'valid_hash';
+		}
+
 		$this->operator = $this->createMock(\vinny\menu\service\menu_operator::class);
 		$this->language = $this->createMock(\phpbb\language\language::class);
 		$this->auth = $this->createMock(\phpbb\auth\auth::class);
@@ -47,6 +69,20 @@ class ajax_controller_test extends \PHPUnit\Framework\TestCase
 		);
 	}
 
+	public function test_reorder_returns_403_when_hash_invalid()
+	{
+		$request = new Request(['hash' => 'invalid_hash']);
+
+		$this->language->expects($this->once())
+			->method('lang')
+			->with('FORM_INVALID')
+			->willReturn('The submitted form was invalid.');
+
+		$response = $this->controller->reorder($request);
+		$this->assertInstanceOf(\Symfony\Component\HttpFoundation\JsonResponse::class, $response);
+		$this->assertEquals(403, $response->getStatusCode());
+	}
+
 	public function test_reorder_with_valid_hierarchy()
 	{
 		$items = [
@@ -54,7 +90,7 @@ class ajax_controller_test extends \PHPUnit\Framework\TestCase
 			['id' => 2, 'parent_id' => 1, 'order' => 1],
 		];
 
-		$request = new Request([], [], [], [], [], [], json_encode(['items' => $items]));
+		$request = new Request(['hash' => 'valid_hash'], [], [], [], [], [], json_encode(['items' => $items]));
 
 		$this->operator->expects($this->once())
 			->method('update_hierarchy')
@@ -67,7 +103,7 @@ class ajax_controller_test extends \PHPUnit\Framework\TestCase
 
 	public function test_reorder_returns_error_when_payload_empty()
 	{
-		$request = new Request();
+		$request = new Request(['hash' => 'valid_hash']);
 
 		$this->language->expects($this->once())
 			->method('lang')

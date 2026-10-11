@@ -26,6 +26,12 @@
         "display-name": "Header Menu",
         "soft-require": {
             "phpbb/phpbb": ">=3.3.0,<4.0.0@dev"
+        },
+        "version-check": {
+            "host": "www.phpbb.com",
+            "directory": "/customise/db/extension/header_menu",
+            "filename": "version_check",
+            "ssl": true
         }
     },
     "minimum-stability": "dev",

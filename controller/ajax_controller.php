@@ -55,10 +55,10 @@ class ajax_controller
 	{
 		$this->language->add_lang('common', 'vinny/menu');
 
-		// Explicit ACL Permission Check for Admin Board access
-		if (!$this->auth->acl_get('a_board'))
+		// Explicit ACL Permission Check and CSRF token verification
+		if (!$this->auth->acl_get('a_board') || !check_link_hash($request->get('hash', ''), 'vinny_menu_reorder'))
 		{
-			return new JsonResponse(['success' => false, 'error' => $this->language->lang('NO_AUTH_OPERATION')], 403);
+			return new JsonResponse(['success' => false, 'error' => $this->language->lang('FORM_INVALID')], 403);
 		}
 
 		// Check raw JSON payload

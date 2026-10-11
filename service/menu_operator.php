@@ -388,9 +388,16 @@ class menu_operator
 			$item_desc = utf8_substr($item_desc, 0, 60);
 		}
 
+		$item_name = (string) ($data['item_name'] ?? '');
+		if (function_exists('utf8_encode_ucr'))
+		{
+			$item_name = utf8_encode_ucr($item_name);
+			$item_desc = utf8_encode_ucr($item_desc);
+		}
+
 		$sql_ary = [
 			'parent_id'			=> $parent_id,
-			'item_name'			=> (string) ($data['item_name'] ?? ''),
+			'item_name'			=> $item_name,
 			'item_url'			=> (string) ($data['item_url'] ?? ''),
 			'item_icon'			=> (string) ($data['item_icon'] ?? ''),
 			'item_target'		=> (string) ($data['item_target'] ?? '_self'),
@@ -639,6 +646,13 @@ class menu_operator
 	/**
 	 * Check if an item should be hidden for given user groups and primary group.
 	 *
+	 * Note on intentional group evaluation behavior:
+	 * Group visibility follows an additive privilege model. If an item is hidden from
+	 * a base group (e.g. Registered Users), a user who also belongs to an unhidden
+	 * non-base secondary group (such as a custom group, or Newly Registered Users) will
+	 * retain visibility of the item. To hide an item from both Registered and Newly Registered
+	 * users, administrators can select both group checkboxes independently in the ACP.
+	 *
 	 * @param array $user_groups All group IDs user belongs to
 	 * @param int   $primary_group User's default/primary group ID
 	 * @param array $hidden_groups Hidden group IDs from item configuration
@@ -865,5 +879,37 @@ class menu_operator
 		// Relative forum URL
 		$clean_url = ltrim($url, '/');
 		return append_sid($this->phpbb_root_path . $clean_url);
+	}
+
+	/**
+	 * Format URL for display in ACP item list.
+	 * Returns full board URL for relative internal links
+	 *
+	 * @param string $url
+	 * @return string
+	 */
+	public function get_display_url($url)
+	{
+		$url = trim($url);
+
+		if ($url === '' || $url === '#')
+		{
+			return $url;
+		}
+
+		// External link, anchor, mailto or void javascript
+		if (preg_match('#^(https?://|//|\#|mailto:|javascript:)#i', $url))
+		{
+			return $url;
+		}
+
+		// Relative internal link: prefix with full board URL
+		$clean_url = ltrim($url, '/');
+		if (function_exists('generate_board_url'))
+		{
+			return generate_board_url() . '/' . $clean_url;
+		}
+
+		return $clean_url;
 	}
 }

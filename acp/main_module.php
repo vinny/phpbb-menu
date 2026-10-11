@@ -120,20 +120,6 @@ class main_module
 				}
 				break;
 
-			case 'move_up':
-			case 'move_down':
-				$direction = ($action === 'move_up') ? 'up' : 'down';
-				$menu_operator->move_item($item_id, $direction);
-
-				if ($request->is_ajax())
-				{
-					$json_response = new \phpbb\json_response();
-					$json_response->send(['success' => true]);
-				}
-
-				meta_refresh(0, $this->u_action);
-				break;
-
 			case 'toggle':
 				if (!check_link_hash($request->variable('hash', ''), 'toggle_enabled'))
 				{
@@ -174,64 +160,49 @@ class main_module
 
 		$toggle_hash = generate_link_hash('toggle_enabled');
 
-		$count = count($tree);
-		foreach ($tree as $index => $item)
+		foreach ($tree as $item)
 		{
 			$template->assign_block_vars('items', [
 				'ID'			=> $item['item_id'],
 				'NAME'			=> $item['item_name'],
-				'URL'			=> $item['item_url'],
+				'URL'			=> $menu_operator->get_display_url($item['item_url']),
 				'ICON'			=> $item['item_icon'],
 				'TARGET'		=> $item['item_target'],
 				'IS_ENABLED'	=> (bool) $item['item_enabled'],
-				'S_FIRST_ROW'	=> ($index === 0),
-				'S_LAST_ROW'	=> ($index === $count - 1),
 				'U_EDIT'		=> $this->u_action . '&amp;action=edit&amp;item_id=' . $item['item_id'],
 				'U_DELETE'		=> $this->u_action . '&amp;action=delete&amp;item_id=' . $item['item_id'],
-				'U_MOVE_UP'		=> $this->u_action . '&amp;action=move_up&amp;item_id=' . $item['item_id'],
-				'U_MOVE_DOWN'	=> $this->u_action . '&amp;action=move_down&amp;item_id=' . $item['item_id'],
 				'U_TOGGLE'		=> $this->u_action . '&amp;action=toggle&amp;item_id=' . $item['item_id'] . '&amp;hash=' . $toggle_hash,
 			]);
 
 			if (!empty($item['children']))
 			{
-				$sub_count = count($item['children']);
-				foreach ($item['children'] as $sub_index => $child)
+				foreach ($item['children'] as $child)
 				{
 					$template->assign_block_vars('items.children', [
 						'ID'			=> $child['item_id'],
 						'NAME'			=> $child['item_name'],
-						'URL'			=> $child['item_url'],
+						'URL'			=> $menu_operator->get_display_url($child['item_url']),
 						'ICON'			=> $child['item_icon'],
 						'TARGET'		=> $child['item_target'],
 						'IS_ENABLED'	=> (bool) $child['item_enabled'],
-						'S_FIRST_ROW'	=> ($sub_index === 0),
-						'S_LAST_ROW'	=> ($sub_index === $sub_count - 1),
 						'U_EDIT'		=> $this->u_action . '&amp;action=edit&amp;item_id=' . $child['item_id'],
 						'U_DELETE'		=> $this->u_action . '&amp;action=delete&amp;item_id=' . $child['item_id'],
-						'U_MOVE_UP'		=> $this->u_action . '&amp;action=move_up&amp;item_id=' . $child['item_id'],
-						'U_MOVE_DOWN'	=> $this->u_action . '&amp;action=move_down&amp;item_id=' . $child['item_id'],
 						'U_TOGGLE'		=> $this->u_action . '&amp;action=toggle&amp;item_id=' . $child['item_id'] . '&amp;hash=' . $toggle_hash,
 					]);
 
 					if (!empty($child['children']))
 					{
-						$subsub_count = count($child['children']);
-						foreach ($child['children'] as $subsub_index => $subchild)
+						foreach ($child['children'] as $subchild)
 						{
 							$template->assign_block_vars('items.children.subchildren', [
 								'ID'			=> $subchild['item_id'],
 								'NAME'			=> $subchild['item_name'],
-								'URL'			=> $subchild['item_url'],
+								'URL'			=> $menu_operator->get_display_url($subchild['item_url']),
 								'ICON'			=> $subchild['item_icon'],
 								'TARGET'		=> $subchild['item_target'],
 								'IS_ENABLED'	=> (bool) $subchild['item_enabled'],
-								'S_FIRST_ROW'	=> ($subsub_index === 0),
-								'S_LAST_ROW'	=> ($subsub_index === $subsub_count - 1),
 								'U_EDIT'		=> $this->u_action . '&amp;action=edit&amp;item_id=' . $subchild['item_id'],
 								'U_DELETE'		=> $this->u_action . '&amp;action=delete&amp;item_id=' . $subchild['item_id'],
-								'U_MOVE_UP'		=> $this->u_action . '&amp;action=move_up&amp;item_id=' . $subchild['item_id'],
-								'U_MOVE_DOWN'	=> $this->u_action . '&amp;action=move_down&amp;item_id=' . $subchild['item_id'],
 								'U_TOGGLE'		=> $this->u_action . '&amp;action=toggle&amp;item_id=' . $subchild['item_id'] . '&amp;hash=' . $toggle_hash,
 							]);
 						}
@@ -268,7 +239,9 @@ class main_module
 		// AJAX Reorder URL
 		/** @var \phpbb\controller\helper $controller_helper */
 		$controller_helper = $phpbb_container->get('controller.helper');
-		$u_reorder_ajax = $controller_helper->route('vinny_menu_reorder');
+		$u_reorder_ajax = $controller_helper->route('vinny_menu_reorder', [
+			'hash' => generate_link_hash('vinny_menu_reorder'),
+		]);
 
 		$template->assign_vars([
 			'U_ACTION'				=> $this->u_action,
@@ -293,11 +266,6 @@ class main_module
 			'ITEM_TARGET'			=> !empty($edit_item) ? $edit_item['item_target'] : '_self',
 			'ITEM_ENABLED'			=> !empty($edit_item) ? $edit_item['item_enabled'] : 1,
 			'PARENT_ID'				=> !empty($edit_item) ? $edit_item['parent_id'] : 0,
-
-			'ICON_MOVE_UP'		=> '<i class="icon acp-icon fa-arrow-up fa-fw" aria-hidden="true" title="' . $language->lang('MOVE_UP') . '"></i>',
-			'ICON_MOVE_DOWN'	=> '<i class="icon acp-icon fa-arrow-down fa-fw" aria-hidden="true" title="' . $language->lang('MOVE_DOWN') . '"></i>',
-			'ICON_EDIT'			=> '<i class="icon acp-icon fa-pencil fa-fw" aria-hidden="true" title="' . $language->lang('EDIT') . '"></i>',
-			'ICON_DELETE'		=> '<i class="icon acp-icon fa-trash fa-fw" aria-hidden="true" title="' . $language->lang('DELETE') . '"></i>',
 		]);
 	}
 }

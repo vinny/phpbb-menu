@@ -79,7 +79,7 @@ $lang = array_merge($lang, [
 	'DRAG_TO_REORDER'					=> 'Drag to reorder or change level',
 	'MENU_NO_ORDER_DATA'				=> 'No valid order data received.',
 	'MENU_HIDE_FOR_GROUPS'				=> 'Hide for user groups',
-	'MENU_HIDE_FOR_GROUPS_EXPLAIN'		=> 'Select groups that should not see this menu item.',
+	'MENU_HIDE_FOR_GROUPS_EXPLAIN'		=> 'Select groups that should not see this menu item. Visibility is additive: members belonging to any unselected secondary group will still see it. To hide an item completely, select all groups the users belong to.',
 	'MENU_MAX_DEPTH_REACHED'			=> 'The selected parent item exceeds the maximum menu depth limit of 3 levels.',
 	'MENU_SUPPORT_STAR'					=> 'If you like this extension, please give it a star on <a href="https://github.com/vinny/phpbb-menu" target="_blank" rel="noopener"><i class="icon fa fa-github fa-fw" aria-hidden="true"></i>GitHub</a>.',
 	'MENU_SUPPORT_DONATE'				=> 'If you find it useful, you can also support its development with an optional <a href="https://ko-fi.com/vinny1" target="_blank" rel="noopener"><i class="icon fa fa-heart fa-fw" aria-hidden="true"></i>donation</a>.',

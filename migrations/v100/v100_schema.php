@@ -48,14 +48,14 @@ class v100_schema extends \phpbb\db\migration\migration
 					'COLUMNS' => [
 						'item_id'		=> ['UINT', null, 'auto_increment'],
 						'parent_id'		=> ['UINT', 0],
-						'item_name'		=> ['VCHAR:255', ''],
+						'item_name'		=> ['VCHAR_UNI:255', ''],
 						'item_url'		=> ['VCHAR:255', ''],
 						'item_icon'		=> ['VCHAR:100', ''],
 						'item_target'	=> ['VCHAR:20', '_self'],
 						'item_order'	=> ['UINT', 0],
 						'item_enabled'	=> ['BOOL', 1],
 						'item_hide_groups' => ['VCHAR:255', ''],
-						'item_desc'		=> ['VCHAR:255', ''],
+						'item_desc'		=> ['VCHAR_UNI:255', ''],
 					],
 					'PRIMARY_KEY' => 'item_id',
 					'KEYS' => [

@@ -10,7 +10,7 @@
 			<ul class="nav-main" role="menubar" data-skip-responsive="true">
 				{% for item in loops.vinny_menu_header %}
 					<li class="header-menu-item{% if item.HAS_CHILDREN %} has-dropdown{% endif %}">
-						<a href="{{ item.URL }}" target="{{ item.TARGET }}" class="nav-link" role="menuitem" title="{{ item.NAME|e('html_attr') }}">
+						<a href="{{ item.URL }}" target="{{ item.TARGET }}" class="nav-link" role="menuitem" title="{{ item.NAME }}">
 							{% if item.ICON %}<i class="icon fa {{ item.ICON }} fa-fw" aria-hidden="true"></i>{% endif %}
 							<span>{{ item.NAME }}</span>
 							{% if item.HAS_CHILDREN %}<i class="icon fa fa-angle-down menu-arrow" aria-hidden="true"></i>{% endif %}
@@ -19,7 +19,7 @@
 							<ul class="vinny-dropdown-menu" role="menu">
 								{% for child in item.children %}
 									<li class="vinny-dropdown-item{% if child.HAS_CHILDREN %} has-submenu{% endif %}">
-										<a href="{{ child.URL }}" target="{{ child.TARGET }}" role="menuitem" title="{{ child.NAME|e('html_attr') }}">
+										<a href="{{ child.URL }}" target="{{ child.TARGET }}" role="menuitem" title="{{ child.NAME }}">
 											{% if child.ICON %}<i class="icon fa {{ child.ICON }} fa-fw item-icon-left" aria-hidden="true"></i>{% endif %}
 											<span class="item-title-group">
 												<span class="item-title">{{ child.NAME }}</span>
@@ -32,7 +32,7 @@
 											<ul class="vinny-subdropdown-menu" role="menu">
 												{% for subchild in child.subchildren %}
 													<li class="vinny-dropdown-item">
-														<a href="{{ subchild.URL }}" target="{{ subchild.TARGET }}" role="menuitem" title="{{ subchild.NAME|e('html_attr') }}">
+														<a href="{{ subchild.URL }}" target="{{ subchild.TARGET }}" role="menuitem" title="{{ subchild.NAME }}">
 															{% if subchild.ICON %}<i class="icon fa {{ subchild.ICON }} fa-fw item-icon-left" aria-hidden="true"></i>{% endif %}
 															<span class="item-title-group">
 																<span class="item-title">{{ subchild.NAME }}</span>
