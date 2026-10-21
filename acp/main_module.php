@@ -27,7 +27,7 @@ class main_module
 	 */
 	public function main($id, $mode)
 	{
-		global $phpbb_container, $language, $template, $request, $config, $phpbb_root_path, $phpEx;
+		global $phpbb_container, $language, $template, $request, $config;
 
 		$language->add_lang(['info_acp_menu', 'common'], 'vinny/menu');
 

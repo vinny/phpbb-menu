@@ -10,7 +10,6 @@
 
 namespace vinny\menu\tests\controller;
 
-use Symfony\Component\HttpFoundation\Request;
 
 if (!function_exists('generate_link_hash'))
 {
@@ -48,6 +47,9 @@ class ajax_controller_test extends \PHPUnit\Framework\TestCase
 	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\auth\auth */
 	protected $auth;
 
+	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\request\request_interface */
+	protected $request;
+
 	/** @var \vinny\menu\controller\ajax_controller */
 	protected $controller;
 
@@ -78,6 +80,7 @@ class ajax_controller_test extends \PHPUnit\Framework\TestCase
 		$this->operator = $this->createMock(\vinny\menu\service\menu_operator::class);
 		$this->language = $this->createMock(\phpbb\language\language::class);
 		$this->auth = $this->createMock(\phpbb\auth\auth::class);
+		$this->request = $this->createMock(\phpbb\request\request_interface::class);
 
 		$this->auth->expects($this->any())
 			->method('acl_get')
@@ -87,20 +90,29 @@ class ajax_controller_test extends \PHPUnit\Framework\TestCase
 		$this->controller = new \vinny\menu\controller\ajax_controller(
 			$this->operator,
 			$this->language,
-			$this->auth
+			$this->auth,
+			$this->request
 		);
 	}
 
 	public function test_reorder_returns_403_when_hash_invalid()
 	{
-		$request = new Request(['hash' => 'invalid_hash_value']);
+		$this->request->expects($this->any())
+			->method('variable')
+			->willReturnCallback(function($var, $default) {
+				if ($var === 'hash')
+				{
+					return 'invalid_hash_value';
+				}
+				return $default;
+			});
 
 		$this->language->expects($this->once())
 			->method('lang')
 			->with('FORM_INVALID')
 			->willReturn('The submitted form was invalid.');
 
-		$response = $this->controller->reorder($request);
+		$response = $this->controller->reorder();
 		$this->assertInstanceOf(\Symfony\Component\HttpFoundation\JsonResponse::class, $response);
 		$this->assertEquals(403, $response->getStatusCode());
 	}
@@ -112,27 +124,47 @@ class ajax_controller_test extends \PHPUnit\Framework\TestCase
 			['id' => 2, 'parent_id' => 1, 'order' => 1],
 		];
 
-		$request = new Request(['hash' => $this->valid_hash], [], [], [], [], [], json_encode(['items' => $items]));
+		$this->request->expects($this->any())
+			->method('variable')
+			->willReturnCallback(function($var, $default) use ($items) {
+				if ($var === 'hash')
+				{
+					return $this->valid_hash;
+				}
+				if ($var === 'items_json')
+				{
+					return htmlspecialchars(json_encode($items), ENT_COMPAT, 'UTF-8');
+				}
+				return $default;
+			});
 
 		$this->operator->expects($this->once())
 			->method('update_hierarchy')
 			->with($items);
 
-		$response = $this->controller->reorder($request);
+		$response = $this->controller->reorder();
 		$this->assertInstanceOf(\Symfony\Component\HttpFoundation\JsonResponse::class, $response);
 		$this->assertEquals(200, $response->getStatusCode());
 	}
 
 	public function test_reorder_returns_error_when_payload_empty()
 	{
-		$request = new Request(['hash' => $this->valid_hash]);
+		$this->request->expects($this->any())
+			->method('variable')
+			->willReturnCallback(function($var, $default) {
+				if ($var === 'hash')
+				{
+					return $this->valid_hash;
+				}
+				return $default;
+			});
 
 		$this->language->expects($this->once())
 			->method('lang')
 			->with('MENU_NO_ORDER_DATA')
 			->willReturn('No reorder data provided.');
 
-		$response = $this->controller->reorder($request);
+		$response = $this->controller->reorder();
 		$this->assertInstanceOf(\Symfony\Component\HttpFoundation\JsonResponse::class, $response);
 		$this->assertEquals(400, $response->getStatusCode());
 	}

@@ -20,9 +20,6 @@ class main_listener implements EventSubscriberInterface
 	/** @var \phpbb\config\config */
 	protected $config;
 
-	/** @var \phpbb\user */
-	protected $user;
-
 	/** @var \phpbb\template\template */
 	protected $template;
 
@@ -33,19 +30,16 @@ class main_listener implements EventSubscriberInterface
 	 * Constructor
 	 *
 	 * @param \phpbb\config\config              $config
-	 * @param \phpbb\user                       $user
 	 * @param \phpbb\template\template          $template
 	 * @param \vinny\menu\service\menu_operator $menu_operator
 	 */
 	public function __construct(
 		\phpbb\config\config $config,
-		\phpbb\user $user,
 		\phpbb\template\template $template,
 		\vinny\menu\service\menu_operator $menu_operator
 	)
 	{
 		$this->config = $config;
-		$this->user = $user;
 		$this->template = $template;
 		$this->menu_operator = $menu_operator;
 	}

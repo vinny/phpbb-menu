@@ -31,11 +31,11 @@ class menu_operator_test extends \PHPUnit\Framework\TestCase
 	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\user */
 	protected $user;
 
-	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\auth\auth */
-	protected $auth;
-
 	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\cache\driver\driver_interface */
 	protected $cache;
+
+	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\group\helper */
+	protected $group_helper;
 
 	/** @var \vinny\menu\service\menu_operator */
 	protected $operator;
@@ -44,17 +44,16 @@ class menu_operator_test extends \PHPUnit\Framework\TestCase
 	{
 		$this->db = $this->createMock(\phpbb\db\driver\driver_interface::class);
 		$this->user = $this->createMock(\phpbb\user::class);
-		$this->auth = $this->createMock(\phpbb\auth\auth::class);
 		$this->cache = $this->createMock(\phpbb\cache\driver\driver_interface::class);
+		$this->group_helper = $this->createMock(\phpbb\group\helper::class);
 
 		$this->operator = new \vinny\menu\service\menu_operator(
 			$this->db,
 			'phpbb_vinny_menu_items',
 			$this->user,
-			$this->auth,
 			'./',
-			'php',
-			$this->cache
+			$this->cache,
+			$this->group_helper
 		);
 	}
 
@@ -274,7 +273,7 @@ class menu_operator_test extends \PHPUnit\Framework\TestCase
 			});
 
 		$this->operator->purge_cache();
-		$this->assertEquals(['vinny_menu_items', 'vinny_menu_reg_groups'], $destroyed);
+		$this->assertEquals(['_vinny_menu_items', '_vinny_menu_reg_groups'], $destroyed);
 	}
 
 	public function test_get_visible_menu_tree_uses_cache()
@@ -295,7 +294,7 @@ class menu_operator_test extends \PHPUnit\Framework\TestCase
 
 		$this->cache->expects($this->once())
 			->method('get')
-			->with('vinny_menu_items')
+			->with('_vinny_menu_items')
 			->willReturn($cached_items);
 
 		// Database must never be queried when cache is valid
@@ -327,11 +326,11 @@ class menu_operator_test extends \PHPUnit\Framework\TestCase
 		$this->cache->expects($this->exactly(2))
 			->method('get')
 			->willReturnCallback(function($key) use ($cached_items) {
-				if ($key === 'vinny_menu_items')
+				if ($key === '_vinny_menu_items')
 				{
 					return $cached_items;
 				}
-				if ($key === 'vinny_menu_reg_groups')
+				if ($key === '_vinny_menu_reg_groups')
 				{
 					return [2, 3];
 				}
@@ -354,18 +353,57 @@ class menu_operator_test extends \PHPUnit\Framework\TestCase
 		$this->assertEquals('Guests Item', $tree[0]['item_name']);
 	}
 
-	public function test_get_user_group_ids_uses_cache()
+	public function test_get_user_group_ids_queries_db_with_cache_ttl()
 	{
-		$this->cache->expects($this->once())
-			->method('get')
-			->with('vinny_menu_ug_10')
-			->willReturn([2, 5]);
+		$this->db->expects($this->once())
+			->method('sql_query')
+			->with($this->stringContains('SELECT group_id FROM'), 3600)
+			->willReturn('result_handle');
 
-		$this->db->expects($this->never())
-			->method('sql_query');
+		$this->db->expects($this->atLeastOnce())
+			->method('sql_fetchrow')
+			->with('result_handle')
+			->willReturnOnConsecutiveCalls(['group_id' => 2], ['group_id' => 5], false);
+
+		$this->db->expects($this->once())
+			->method('sql_freeresult')
+			->with('result_handle');
 
 		$groups = $this->operator->get_user_group_ids(10);
 		$this->assertEquals([2, 5], $groups);
+	}
+
+	public function test_get_all_groups_uses_group_helper()
+	{
+		$this->db->expects($this->once())
+			->method('sql_query')
+			->willReturn('result_handle');
+
+		$this->db->expects($this->atLeastOnce())
+			->method('sql_fetchrow')
+			->with('result_handle')
+			->willReturnOnConsecutiveCalls(
+				['group_id' => 2, 'group_name' => 'REGISTERED', 'group_type' => 3],
+				['group_id' => 4, 'group_name' => 'GLOBAL_MODERATORS', 'group_type' => 3],
+				false
+			);
+
+		$this->db->expects($this->once())
+			->method('sql_freeresult')
+			->with('result_handle');
+
+		$this->group_helper->expects($this->exactly(2))
+			->method('get_name')
+			->willReturnCallback(function($group_name) {
+				return 'Translated ' . $group_name;
+			});
+
+		$groups = $this->operator->get_all_groups('2');
+		$this->assertCount(2, $groups);
+		$this->assertEquals('Translated REGISTERED', $groups[0]['group_name']);
+		$this->assertTrue($groups[0]['selected']);
+		$this->assertEquals('Translated GLOBAL_MODERATORS', $groups[1]['group_name']);
+		$this->assertFalse($groups[1]['selected']);
 	}
 }
 

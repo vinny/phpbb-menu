@@ -11,7 +11,6 @@
 namespace vinny\menu\controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Controller for handling AJAX actions in Header Menu
@@ -27,70 +26,51 @@ class ajax_controller
 	/** @var \phpbb\auth\auth */
 	protected $auth;
 
+	/** @var \phpbb\request\request_interface */
+	protected $request;
+
 	/**
 	 * Constructor
 	 *
 	 * @param \vinny\menu\service\menu_operator $menu_operator
 	 * @param \phpbb\language\language          $language
 	 * @param \phpbb\auth\auth                  $auth
+	 * @param \phpbb\request\request_interface  $request
 	 */
 	public function __construct(
 		\vinny\menu\service\menu_operator $menu_operator,
 		\phpbb\language\language $language,
-		\phpbb\auth\auth $auth
+		\phpbb\auth\auth $auth,
+		\phpbb\request\request_interface $request
 	)
 	{
 		$this->menu_operator = $menu_operator;
 		$this->language = $language;
 		$this->auth = $auth;
+		$this->request = $request;
 	}
 
 	/**
 	 * AJAX endpoint to update item order & hierarchy
 	 *
-	 * @param Request $request
 	 * @return JsonResponse
 	 */
-	public function reorder(Request $request)
+	public function reorder()
 	{
 		$this->language->add_lang('common', 'vinny/menu');
 
+		$hash = $this->request->variable('hash', '');
+
 		// Explicit ACL Permission Check and CSRF token verification
-		if (!$this->auth->acl_get('a_board') || !check_link_hash($request->get('hash', ''), 'vinny_menu_reorder'))
+		if (!$this->auth->acl_get('a_board') || !check_link_hash($hash, 'vinny_menu_reorder'))
 		{
 			return new JsonResponse(['success' => false, 'error' => $this->language->lang('FORM_INVALID')], 403);
 		}
 
-		// Check raw JSON payload
-		$content = $request->getContent();
-		if (!empty($content))
-		{
-			$data = json_decode($content, true);
-			if (isset($data['items']) && is_array($data['items']))
-			{
-				$this->menu_operator->update_hierarchy($data['items']);
-				return new JsonResponse(['success' => true]);
-			}
-			if (isset($data['order']) && is_array($data['order']))
-			{
-				$this->menu_operator->update_orders($data['order']);
-				return new JsonResponse(['success' => true]);
-			}
-		}
-
-		// Check POST array 'order' (FormData)
-		$order = $request->request->get('order', []);
-		if (!empty($order) && is_array($order))
-		{
-			$this->menu_operator->update_orders($order);
-			return new JsonResponse(['success' => true]);
-		}
-
-		// Check POST parameter 'items_json'
-		$items_str = $request->request->get('items_json', '');
+		$items_str = $this->request->variable('items_json', '', true);
 		if (!empty($items_str))
 		{
-			$items_data = json_decode($items_str, true);
+			$items_data = json_decode(htmlspecialchars_decode($items_str, ENT_COMPAT), true);
 			if (is_array($items_data))
 			{
 				$this->menu_operator->update_hierarchy($items_data);

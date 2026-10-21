@@ -19,11 +19,11 @@
 		<fieldset>
 			<dl>
 				<dt><label for="item_name">{{ lang('MENU_ITEM_NAME') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_NAME_EXPLAIN') }}</span></dt>
-				<dd><input type="text" id="item_name" name="item_name" value="{{ ITEM_NAME|e('html_attr') }}" maxlength="255" required /></dd>
+				<dd><input type="text" id="item_name" name="item_name" value="{{ ITEM_NAME }}" maxlength="255" required /></dd>
 			</dl>
 			<dl>
 				<dt><label for="item_url">{{ lang('MENU_ITEM_URL') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_URL_EXPLAIN') }}</span></dt>
-				<dd><input type="text" id="item_url" name="item_url" value="{{ ITEM_URL|e('html_attr') }}" maxlength="255" placeholder="{{ lang('MENU_ITEM_URL_PLACEHOLDER')|e('html_attr') }}" /></dd>
+				<dd><input type="text" id="item_url" name="item_url" value="{{ ITEM_URL }}" maxlength="255" placeholder="{{ lang('MENU_ITEM_URL_PLACEHOLDER')|e('html_attr') }}" /></dd>
 			</dl>
 			<dl>
 				<dt><label for="edit_parent_id">{{ lang('MENU_ITEM_PARENT') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_PARENT_EXPLAIN') }}</span></dt>
@@ -38,12 +38,12 @@
 			</dl>
 			<dl id="edit_item_desc_row">
 				<dt><label for="item_desc">{{ lang('MENU_ITEM_DESC') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_DESC_EXPLAIN') }}</span></dt>
-				<dd><input type="text" id="item_desc" name="item_desc" value="{{ ITEM_DESC|e('html_attr') }}" maxlength="60" /></dd>
+				<dd><input type="text" id="item_desc" name="item_desc" value="{{ ITEM_DESC }}" maxlength="60" /></dd>
 			</dl>
 			<dl>
 				<dt><label for="item_icon">{{ lang('MENU_ITEM_ICON') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_ICON_EXPLAIN')|raw }}</span></dt>
 				<dd>
-					<input type="text" id="item_icon" name="item_icon" value="{{ ITEM_ICON|e('html_attr') }}" maxlength="100" placeholder="{{ lang('MENU_ITEM_ICON_PLACEHOLDER')|e('html_attr') }}" />
+					<input type="text" id="item_icon" name="item_icon" value="{{ ITEM_ICON }}" maxlength="100" placeholder="{{ lang('MENU_ITEM_ICON_PLACEHOLDER')|e('html_attr') }}" />
 					<span class="menu-icon-preview">
 						<i class="icon fa {% if ITEM_ICON %}{{ ITEM_ICON }}{% endif %} fa-fw"{% if not ITEM_ICON %} style="display: none;"{% endif %}></i>
 					</span>
@@ -308,41 +308,12 @@
 		</ol>
 	</div>
 
-	<div id="vinny-menu-data" data-reorder-url="{{ U_REORDER_AJAX|e('html_attr') }}"></div>
+	<div id="vinny-menu-data" data-reorder-url="{{ U_REORDER_AJAX }}"></div>
 
 	{% INCLUDEJS '@vinny_menu/js/Sortable.min.js' %}
 
 {% endif %}
 
 {% INCLUDEJS '@vinny_menu/js/acp_menu.js' %}
-
-<script>
-(function() {
-	function checkDescVisibility(selectEl, rowEl) {
-		if (!selectEl || !rowEl) return;
-		var selectedOpt = selectEl.options[selectEl.selectedIndex];
-		var level = selectedOpt ? selectedOpt.getAttribute('data-level') : '0';
-		if (level === '1' || level === '2') {
-			rowEl.style.display = '';
-		} else {
-			rowEl.style.display = 'none';
-		}
-	}
-
-	var editSelect = document.getElementById('edit_parent_id');
-	var editRow = document.getElementById('edit_item_desc_row');
-	if (editSelect && editRow) {
-		checkDescVisibility(editSelect, editRow);
-		editSelect.addEventListener('change', function() { checkDescVisibility(editSelect, editRow); });
-	}
-
-	var addSelect = document.getElementById('add_parent_id');
-	var addRow = document.getElementById('add_item_desc_row');
-	if (addSelect && addRow) {
-		checkDescVisibility(addSelect, addRow);
-		addSelect.addEventListener('change', function() { checkDescVisibility(addSelect, addRow); });
-	}
-})();
-</script>
 
 {% INCLUDE 'overall_footer.html' %}

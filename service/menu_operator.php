@@ -24,17 +24,14 @@ class menu_operator
 	/** @var \phpbb\user */
 	protected $user;
 
-	/** @var \phpbb\auth\auth */
-	protected $auth;
-
 	/** @var string */
 	protected $phpbb_root_path;
 
-	/** @var string */
-	protected $php_ext;
-
 	/** @var \phpbb\cache\driver\driver_interface|null */
 	protected $cache;
+
+	/** @var \phpbb\group\helper|null */
+	protected $group_helper;
 
 	/**
 	 * Constructor
@@ -42,20 +39,25 @@ class menu_operator
 	 * @param \phpbb\db\driver\driver_interface         $db
 	 * @param string                                    $table_name
 	 * @param \phpbb\user                               $user
-	 * @param \phpbb\auth\auth                          $auth
 	 * @param string                                    $phpbb_root_path
-	 * @param string                                    $php_ext
 	 * @param \phpbb\cache\driver\driver_interface|null $cache
+	 * @param \phpbb\group\helper|null                  $group_helper
 	 */
-	public function __construct(\phpbb\db\driver\driver_interface $db, $table_name, \phpbb\user $user, \phpbb\auth\auth $auth, $phpbb_root_path, $php_ext, \phpbb\cache\driver\driver_interface $cache = null)
+	public function __construct(
+		\phpbb\db\driver\driver_interface $db,
+		$table_name,
+		\phpbb\user $user,
+		$phpbb_root_path,
+		\phpbb\cache\driver\driver_interface $cache = null,
+		\phpbb\group\helper $group_helper = null
+	)
 	{
 		$this->db = $db;
 		$this->table_name = $table_name;
 		$this->user = $user;
-		$this->auth = $auth;
 		$this->phpbb_root_path = $phpbb_root_path;
-		$this->php_ext = $php_ext;
 		$this->cache = $cache;
+		$this->group_helper = $group_helper;
 	}
 
 	/**
@@ -93,40 +95,6 @@ class menu_operator
 		$this->db->sql_freeresult($result);
 
 		return $items;
-	}
-
-	/**
-	 * Fetch all items flattened in hierarchical sequence with depth metadata.
-	 *
-	 * @return array List of items with 'depth' key
-	 */
-	public function get_hierarchical_items()
-	{
-		$all_items = $this->get_all_items();
-		$tree = [];
-		$this->flatten_hierarchical_items($all_items, 0, 0, $tree);
-		return $tree;
-	}
-
-	/**
-	 * Recursive helper to flatten menu tree.
-	 *
-	 * @param array $items
-	 * @param int   $parent_id
-	 * @param int   $depth
-	 * @param array &$result
-	 */
-	protected function flatten_hierarchical_items($items, $parent_id, $depth, &$result)
-	{
-		foreach ($items as $item)
-		{
-			if ((int) $item['parent_id'] === (int) $parent_id)
-			{
-				$item['depth'] = $depth;
-				$result[] = $item;
-				$this->flatten_hierarchical_items($items, $item['item_id'], $depth + 1, $result);
-			}
-		}
 	}
 
 	/**
@@ -490,38 +458,6 @@ class menu_operator
 	}
 
 	/**
-	 * Bulk update item order from an array of item IDs in order.
-	 *
-	 * @param array $item_ids List of item_id in desired sequence
-	 */
-	public function update_orders(array $item_ids)
-	{
-		if (empty($item_ids))
-		{
-			return;
-		}
-
-		$this->db->sql_transaction('begin');
-
-		$order = 1;
-		foreach ($item_ids as $id)
-		{
-			$id = (int) $id;
-			if ($id > 0)
-			{
-				$sql = 'UPDATE ' . $this->table_name . '
-					SET item_order = ' . (int) $order . '
-					WHERE item_id = ' . (int) $id;
-				$this->db->sql_query($sql);
-				$order++;
-			}
-		}
-
-		$this->db->sql_transaction('commit');
-		$this->purge_cache();
-	}
-
-	/**
 	 * Check if item has any child items.
 	 *
 	 * @param int $item_id
@@ -579,62 +515,6 @@ class menu_operator
 				$collected[] = $child_id;
 				$this->collect_descendant_ids($all_items, $child_id, $collected);
 			}
-		}
-	}
-
-	/**
-	 * Move item order up or down.
-	 *
-	 * @param int    $item_id
-	 * @param string $direction 'up' or 'down'
-	 */
-	public function move_item($item_id, $direction)
-	{
-		$current = $this->get_item($item_id);
-		if (!$current)
-		{
-			return;
-		}
-
-		$current_order = (int) $current['item_order'];
-
-		if ($direction === 'up')
-		{
-			$sql = 'SELECT item_id, item_order FROM ' . $this->table_name . '
-				WHERE item_order < ' . (int) $current_order . '
-				ORDER BY item_order DESC';
-		}
-		else
-		{
-			$sql = 'SELECT item_id, item_order FROM ' . $this->table_name . '
-				WHERE item_order > ' . (int) $current_order . '
-				ORDER BY item_order ASC';
-		}
-
-		$result = $this->db->sql_query_limit($sql, 1);
-		$target = $this->db->sql_fetchrow($result);
-		$this->db->sql_freeresult($result);
-
-		if ($target)
-		{
-			$target_id = (int) $target['item_id'];
-			$target_order = (int) $target['item_order'];
-
-			$this->db->sql_transaction('begin');
-
-			// Swap order values
-			$sql = 'UPDATE ' . $this->table_name . '
-				SET item_order = ' . (int) $target_order . '
-				WHERE item_id = ' . (int) $item_id;
-			$this->db->sql_query($sql);
-
-			$sql = 'UPDATE ' . $this->table_name . '
-				SET item_order = ' . (int) $current_order . '
-				WHERE item_id = ' . (int) $target_id;
-			$this->db->sql_query($sql);
-
-			$this->db->sql_transaction('commit');
-			$this->purge_cache();
 		}
 	}
 
@@ -737,8 +617,8 @@ class menu_operator
 	{
 		if ($this->cache !== null)
 		{
-			$this->cache->destroy('vinny_menu_items');
-			$this->cache->destroy('vinny_menu_reg_groups');
+			$this->cache->destroy('_vinny_menu_items');
+			$this->cache->destroy('_vinny_menu_reg_groups');
 		}
 	}
 
@@ -749,7 +629,7 @@ class menu_operator
 	 */
 	public function get_registered_group_ids()
 	{
-		$ids = ($this->cache !== null) ? $this->cache->get('vinny_menu_reg_groups') : false;
+		$ids = ($this->cache !== null) ? $this->cache->get('_vinny_menu_reg_groups') : false;
 
 		if (is_array($ids))
 		{
@@ -770,7 +650,7 @@ class menu_operator
 
 		if ($this->cache !== null)
 		{
-			$this->cache->put('vinny_menu_reg_groups', $ids, 86400);
+			$this->cache->put('_vinny_menu_reg_groups', $ids, 86400);
 		}
 
 		return $ids;
@@ -783,7 +663,7 @@ class menu_operator
 	 */
 	public function get_visible_menu_tree()
 	{
-		$items = ($this->cache !== null) ? $this->cache->get('vinny_menu_items') : false;
+		$items = ($this->cache !== null) ? $this->cache->get('_vinny_menu_items') : false;
 
 		if (!is_array($items))
 		{
@@ -801,7 +681,7 @@ class menu_operator
 
 			if ($this->cache !== null)
 			{
-				$this->cache->put('vinny_menu_items', $items);
+				$this->cache->put('_vinny_menu_items', $items);
 			}
 		}
 
@@ -901,28 +781,16 @@ class menu_operator
 			return [$primary];
 		}
 
-		$cache_key = 'vinny_menu_ug_' . $user_id;
-		$groups = ($this->cache !== null) ? $this->cache->get($cache_key) : false;
-		if (is_array($groups))
-		{
-			return $groups;
-		}
-
 		$groups = [];
 		$sql = 'SELECT group_id FROM ' . USER_GROUP_TABLE . '
 			WHERE user_id = ' . (int) $user_id . '
 				AND user_pending = 0';
-		$result = $this->db->sql_query($sql);
+		$result = $this->db->sql_query($sql, 3600);
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$groups[] = (int) $row['group_id'];
 		}
 		$this->db->sql_freeresult($result);
-
-		if ($this->cache !== null)
-		{
-			$this->cache->put($cache_key, $groups, 3600);
-		}
 
 		return $groups;
 	}
@@ -956,7 +824,7 @@ class menu_operator
 		while ($row = $this->db->sql_fetchrow($result))
 		{
 			$g_id = (int) $row['group_id'];
-			$g_name = ($row['group_type'] == 3 && isset($this->user->lang['G_' . $row['group_name']])) ? $this->user->lang['G_' . $row['group_name']] : $row['group_name'];
+			$g_name = ($this->group_helper !== null) ? $this->group_helper->get_name($row['group_name']) : ((defined('GROUP_SPECIAL') && (int) $row['group_type'] === GROUP_SPECIAL && isset($this->user->lang['G_' . $row['group_name']])) ? $this->user->lang['G_' . $row['group_name']] : $row['group_name']);
 			$groups[] = [
 				'group_id'   => $g_id,
 				'group_name' => $g_name,

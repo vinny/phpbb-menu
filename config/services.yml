@@ -8,16 +8,14 @@ services:
             - '@dbal.conn'
             - '%tables.vinny_menu_items%'
             - '@user'
-            - '@auth'
             - '%core.root_path%'
-            - '%core.php_ext%'
             - '@cache.driver'
+            - '@group_helper'
 
     vinny.menu.listener:
         class: vinny\menu\event\main_listener
         arguments:
             - '@config'
-            - '@user'
             - '@template'
             - '@vinny.menu.operator'
         tags:
@@ -29,3 +27,4 @@ services:
             - '@vinny.menu.operator'
             - '@language'
             - '@auth'
+            - '@request'
