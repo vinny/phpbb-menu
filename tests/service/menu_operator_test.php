@@ -324,10 +324,19 @@ class menu_operator_test extends \PHPUnit\Framework\TestCase
 			],
 		];
 
-		$this->cache->expects($this->once())
+		$this->cache->expects($this->exactly(2))
 			->method('get')
-			->with('vinny_menu_items')
-			->willReturn($cached_items);
+			->willReturnCallback(function($key) use ($cached_items) {
+				if ($key === 'vinny_menu_items')
+				{
+					return $cached_items;
+				}
+				if ($key === 'vinny_menu_reg_groups')
+				{
+					return [2, 3];
+				}
+				return false;
+			});
 
 		// Guest user
 		$this->user->data = [
