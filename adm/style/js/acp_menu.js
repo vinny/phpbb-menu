@@ -2,6 +2,80 @@
 	'use strict';
 
 	$(function() {
+		// Live icon preview
+		var $iconInput = $('input[name="item_icon"]');
+		if ($iconInput.length) {
+			var $previewContainer = $('.menu-icon-preview');
+			var $previewIcon = $previewContainer.find('i');
+
+			var updateIconPreview = function() {
+				var value = $iconInput.val().trim();
+
+				if (value === '') {
+					$previewIcon.hide();
+				} else {
+					var displayClass = value.toLowerCase().replace(/^fa\s+/, '').trim();
+					if (displayClass.indexOf('fa-') !== 0) {
+						displayClass = 'fa-' + displayClass;
+					}
+					$previewIcon.attr('class', 'icon fa ' + displayClass + ' fa-fw');
+					$previewIcon.css('display', 'inline-block');
+				}
+			};
+
+			$iconInput.on('input', updateIconPreview);
+
+			$iconInput.on('change', function() {
+				var value = $iconInput.val().trim();
+				if (value !== '') {
+					value = value.toLowerCase().replace(/^fa\s+/, '').trim();
+					if (value.indexOf('fa-') !== 0) {
+						value = 'fa-' + value;
+					}
+					$iconInput.val(value);
+				}
+				updateIconPreview();
+			});
+
+			$iconInput.closest('form').on('reset', function() {
+				setTimeout(updateIconPreview, 50);
+			});
+
+			updateIconPreview();
+		}
+
+		// Description field visibility based on parent depth (level 1 or 2)
+		function checkDescVisibility(selectEl, rowEl) {
+			if (!selectEl || !rowEl) {
+				return;
+			}
+			var selectedOpt = selectEl.options[selectEl.selectedIndex];
+			var level = selectedOpt ? selectedOpt.getAttribute('data-level') : '0';
+			if (level === '1' || level === '2') {
+				rowEl.style.display = '';
+			} else {
+				rowEl.style.display = 'none';
+			}
+		}
+
+		var editSelect = document.getElementById('edit_parent_id');
+		var editRow = document.getElementById('edit_item_desc_row');
+		if (editSelect && editRow) {
+			checkDescVisibility(editSelect, editRow);
+			editSelect.addEventListener('change', function() {
+				checkDescVisibility(editSelect, editRow);
+			});
+		}
+
+		var addSelect = document.getElementById('add_parent_id');
+		var addRow = document.getElementById('add_item_desc_row');
+		if (addSelect && addRow) {
+			checkDescVisibility(addSelect, addRow);
+			addSelect.addEventListener('change', function() {
+				checkDescVisibility(addSelect, addRow);
+			});
+		}
+
 		var $dataEl = $('#vinny-menu-data');
 		if (!$dataEl.length) {
 			return;
@@ -93,12 +167,12 @@
 			var $icon = $activeHandle.find('i');
 			$icon.removeClass('fa-arrows').addClass('fa-spinner fa-spin');
 
+			var formData = new FormData();
+			formData.append('items_json', JSON.stringify(treeData));
+
 			fetch(reorderUrl, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ items: treeData })
+				body: formData
 			})
 				.then(function(res) { return res.json(); })
 				.then(function(data) {

@@ -8,6 +8,8 @@
 }
 
 .vinny-header-menu {
+	background-color: var(--vinny-menu-bg, #12a3eb) !important;
+	border-bottom: none !important;
 	border-radius: 0 0 7px 7px;
 	padding: 0;
 	margin-top: 0;
@@ -53,8 +55,15 @@
 	padding: 10px 14px;
 	font-size: 1.1em;
 	font-weight: 600;
+	color: var(--vinny-menu-text, #ffffff) !important;
 	text-decoration: none;
 	transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.vinny-header-menu .header-menu-item:hover > a.nav-link,
+.vinny-header-menu .header-menu-item.open > a.nav-link {
+	background-color: var(--vinny-menu-bg-hover, #0076b1) !important;
+	color: var(--vinny-menu-text-hover, #d31141) !important;
 }
 
 /* First and Last Top-Level Item Border-Radius Alignment */
@@ -86,6 +95,7 @@
 	left: 0;
 	z-index: 1050;
 	min-width: 220px;
+	background-color: var(--vinny-menu-sub-bg, #12a3eb) !important;
 	border-radius: 8px;
 	margin: 0;
 	padding: 6px 0;
@@ -126,6 +136,7 @@
 	padding: 8px 14px;
 	font-size: 1em;
 	font-weight: 500;
+	color: var(--vinny-menu-sub-text, #ffffff) !important;
 	text-decoration: none;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 	transition: background-color 0.15s ease, color 0.15s ease;
@@ -155,6 +166,7 @@
 	font-weight: 400;
 	line-height: 1.35;
 	margin-top: 2px;
+	color: var(--vinny-menu-sub-desc, #000000) !important;
 	opacity: 0.88;
 }
 
@@ -178,8 +190,15 @@
 	transition: color 0.15s ease, transform 0.15s ease;
 }
 
-.vinny-header-menu .vinny-dropdown-item:hover > a {
+.vinny-header-menu .vinny-dropdown-item:hover > a,
+.vinny-header-menu .vinny-dropdown-item.has-submenu.open > a {
+	background-color: var(--vinny-menu-sub-bg-hover, #0076b1) !important;
+	color: var(--vinny-menu-sub-text-hover, #d31141) !important;
 	text-decoration: none;
+}
+
+.vinny-header-menu .vinny-dropdown-item:hover > a .item-desc {
+	color: var(--vinny-menu-sub-text-hover, #d31141) !important;
 }
 
 .vinny-header-menu .vinny-dropdown-item:hover > a i.submenu-arrow,
@@ -195,6 +214,7 @@
 	left: 100%;
 	z-index: 1060;
 	min-width: 200px;
+	background-color: var(--vinny-menu-sub-bg, #12a3eb) !important;
 	border-radius: 8px;
 	margin-left: 2px;
 	padding: 6px 0;
@@ -223,6 +243,15 @@
 /* Mobile Responsiveness & Accordion Submenus */
 .vinny-header-menu .vinny-mobile-bar {
 	display: none;
+}
+
+.vinny-header-menu .vinny-mobile-toggle {
+	color: var(--vinny-menu-text, #ffffff) !important;
+}
+
+.vinny-header-menu .vinny-mobile-toggle:hover {
+	background-color: var(--vinny-menu-bg-hover, #0076b1) !important;
+	color: var(--vinny-menu-text-hover, #d31141) !important;
 }
 
 @media (max-width: 850px), (orientation: landscape) and (max-height: 550px) {

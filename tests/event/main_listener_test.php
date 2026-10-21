@@ -18,9 +18,6 @@ class main_listener_test extends \PHPUnit\Framework\TestCase
 	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\config\config */
 	protected $config;
 
-	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\user */
-	protected $user;
-
 	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\template\template */
 	protected $template;
 
@@ -33,13 +30,11 @@ class main_listener_test extends \PHPUnit\Framework\TestCase
 	protected function setUp(): void
 	{
 		$this->config = $this->createMock(\phpbb\config\config::class);
-		$this->user = $this->createMock(\phpbb\user::class);
 		$this->template = $this->createMock(\phpbb\template\template::class);
 		$this->operator = $this->createMock(\vinny\menu\service\menu_operator::class);
 
 		$this->listener = new \vinny\menu\event\main_listener(
 			$this->config,
-			$this->user,
 			$this->template,
 			$this->operator
 		);
