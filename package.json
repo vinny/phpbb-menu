@@ -7,8 +7,8 @@
   "scripts": {
     "lint:js": "eslint \"adm/style/js/**/*.js\" \"adm/style/*.html\" \"styles/prosilver/template/**/*.html\"",
     "lint:js:fix": "eslint \"adm/style/js/**/*.js\" \"adm/style/*.html\" \"styles/prosilver/template/**/*.html\" --fix",
-    "lint:css": "stylelint \"adm/style/css/*.css\" \"styles/prosilver/theme/*.css\"",
-    "lint:css:fix": "stylelint \"adm/style/css/*.css\" \"styles/prosilver/theme/*.css\" --fix",
+    "lint:css": "stylelint \"adm/style/css/*.css\" \"styles/all/theme/*.css\" \"styles/prosilver/theme/*.css\"",
+    "lint:css:fix": "stylelint \"adm/style/css/*.css\" \"styles/all/theme/*.css\" \"styles/prosilver/theme/*.css\" --fix",
     "lint:twig": "php vendor/bin/twigcs adm/style styles/prosilver/template",
     "lint:php": "php vendor/bin/phpcs",
     "phpstan": "php vendor/bin/phpstan analyse",
