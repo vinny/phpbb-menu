@@ -34,6 +34,9 @@ class menu_operator_test extends \PHPUnit\Framework\TestCase
 	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\auth\auth */
 	protected $auth;
 
+	/** @var \PHPUnit\Framework\MockObject\MockObject|\phpbb\cache\driver\driver_interface */
+	protected $cache;
+
 	/** @var \vinny\menu\service\menu_operator */
 	protected $operator;
 
@@ -42,6 +45,7 @@ class menu_operator_test extends \PHPUnit\Framework\TestCase
 		$this->db = $this->createMock(\phpbb\db\driver\driver_interface::class);
 		$this->user = $this->createMock(\phpbb\user::class);
 		$this->auth = $this->createMock(\phpbb\auth\auth::class);
+		$this->cache = $this->createMock(\phpbb\cache\driver\driver_interface::class);
 
 		$this->operator = new \vinny\menu\service\menu_operator(
 			$this->db,
@@ -49,7 +53,8 @@ class menu_operator_test extends \PHPUnit\Framework\TestCase
 			$this->user,
 			$this->auth,
 			'./',
-			'php'
+			'php',
+			$this->cache
 		);
 	}
 
@@ -257,6 +262,101 @@ class menu_operator_test extends \PHPUnit\Framework\TestCase
 
 		$result = $this->operator->save_item($data, 1);
 		$this->assertEquals(1, $result);
+	}
+
+	public function test_purge_cache()
+	{
+		$destroyed = [];
+		$this->cache->expects($this->exactly(2))
+			->method('destroy')
+			->willReturnCallback(function($key) use (&$destroyed) {
+				$destroyed[] = $key;
+			});
+
+		$this->operator->purge_cache();
+		$this->assertEquals(['vinny_menu_items', 'vinny_menu_reg_groups'], $destroyed);
+	}
+
+	public function test_get_visible_menu_tree_uses_cache()
+	{
+		$cached_items = [
+			[
+				'item_id'          => 1,
+				'parent_id'        => 0,
+				'item_name'        => 'Cached Item',
+				'item_url'         => 'https://example.com',
+				'item_icon'        => 'fa-star',
+				'item_target'      => '_self',
+				'item_enabled'     => 1,
+				'item_hide_groups' => '',
+				'item_desc'        => '',
+			],
+		];
+
+		$this->cache->expects($this->once())
+			->method('get')
+			->with('vinny_menu_items')
+			->willReturn($cached_items);
+
+		// Database must never be queried when cache is valid
+		$this->db->expects($this->never())
+			->method('sql_query');
+
+		$tree = $this->operator->get_visible_menu_tree();
+		$this->assertCount(1, $tree);
+		$this->assertEquals('Cached Item', $tree[0]['item_name']);
+		$this->assertEquals('https://example.com', $tree[0]['formatted_url']);
+	}
+
+	public function test_get_visible_menu_tree_bypasses_groups_for_guests()
+	{
+		$cached_items = [
+			[
+				'item_id'          => 1,
+				'parent_id'        => 0,
+				'item_name'        => 'Guests Item',
+				'item_url'         => 'https://example.com',
+				'item_icon'        => '',
+				'item_target'      => '_self',
+				'item_enabled'     => 1,
+				'item_hide_groups' => '2', // Hidden from Registered
+				'item_desc'        => '',
+			],
+		];
+
+		$this->cache->expects($this->once())
+			->method('get')
+			->with('vinny_menu_items')
+			->willReturn($cached_items);
+
+		// Guest user
+		$this->user->data = [
+			'user_id'  => 1,
+			'group_id' => 1,
+			'is_bot'   => false,
+		];
+
+		// USER_GROUP_TABLE query must NOT be executed for guests
+		$this->db->expects($this->never())
+			->method('sql_query');
+
+		$tree = $this->operator->get_visible_menu_tree();
+		$this->assertCount(1, $tree);
+		$this->assertEquals('Guests Item', $tree[0]['item_name']);
+	}
+
+	public function test_get_user_group_ids_uses_cache()
+	{
+		$this->cache->expects($this->once())
+			->method('get')
+			->with('vinny_menu_ug_10')
+			->willReturn([2, 5]);
+
+		$this->db->expects($this->never())
+			->method('sql_query');
+
+		$groups = $this->operator->get_user_group_ids(10);
+		$this->assertEquals([2, 5], $groups);
 	}
 }
 

@@ -11,6 +11,7 @@ services:
             - '@auth'
             - '%core.root_path%'
             - '%core.php_ext%'
+            - '@cache.driver'
 
     vinny.menu.listener:
         class: vinny\menu\event\main_listener

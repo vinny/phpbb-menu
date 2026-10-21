@@ -1,6 +1,6 @@
 {
   "name": "vinny-menu",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Development tooling and linters for phpBB Header Menu extension",
   "private": true,
   "type": "module",

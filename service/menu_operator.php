@@ -33,17 +33,21 @@ class menu_operator
 	/** @var string */
 	protected $php_ext;
 
+	/** @var \phpbb\cache\driver\driver_interface|null */
+	protected $cache;
+
 	/**
 	 * Constructor
 	 *
-	 * @param \phpbb\db\driver\driver_interface $db
-	 * @param string                            $table_name
-	 * @param \phpbb\user                       $user
-	 * @param \phpbb\auth\auth                  $auth
-	 * @param string                            $phpbb_root_path
-	 * @param string                            $php_ext
+	 * @param \phpbb\db\driver\driver_interface         $db
+	 * @param string                                    $table_name
+	 * @param \phpbb\user                               $user
+	 * @param \phpbb\auth\auth                          $auth
+	 * @param string                                    $phpbb_root_path
+	 * @param string                                    $php_ext
+	 * @param \phpbb\cache\driver\driver_interface|null $cache
 	 */
-	public function __construct(\phpbb\db\driver\driver_interface $db, $table_name, \phpbb\user $user, \phpbb\auth\auth $auth, $phpbb_root_path, $php_ext)
+	public function __construct(\phpbb\db\driver\driver_interface $db, $table_name, \phpbb\user $user, \phpbb\auth\auth $auth, $phpbb_root_path, $php_ext, \phpbb\cache\driver\driver_interface $cache = null)
 	{
 		$this->db = $db;
 		$this->table_name = $table_name;
@@ -51,6 +55,7 @@ class menu_operator
 		$this->auth = $auth;
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->php_ext = $php_ext;
+		$this->cache = $cache;
 	}
 
 	/**
@@ -412,6 +417,9 @@ class menu_operator
 				SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . '
 				WHERE item_id = ' . (int) $item_id;
 			$this->db->sql_query($sql);
+
+			$this->purge_cache();
+
 			return $item_id;
 		}
 		else
@@ -427,7 +435,11 @@ class menu_operator
 			$sql = 'INSERT INTO ' . $this->table_name . ' ' . $this->db->sql_build_array('INSERT', $sql_ary);
 			$this->db->sql_query($sql);
 
-			return (int) $this->db->sql_nextid();
+			$new_id = (int) $this->db->sql_nextid();
+
+			$this->purge_cache();
+
+			return $new_id;
 		}
 	}
 
@@ -474,6 +486,7 @@ class menu_operator
 		}
 
 		$this->db->sql_transaction('commit');
+		$this->purge_cache();
 	}
 
 	/**
@@ -505,6 +518,7 @@ class menu_operator
 		}
 
 		$this->db->sql_transaction('commit');
+		$this->purge_cache();
 	}
 
 	/**
@@ -544,6 +558,8 @@ class menu_operator
 		$sql = 'DELETE FROM ' . $this->table_name . '
 			WHERE ' . $this->db->sql_in_set('item_id', $ids_to_delete);
 		$this->db->sql_query($sql);
+
+		$this->purge_cache();
 	}
 
 	/**
@@ -618,6 +634,7 @@ class menu_operator
 			$this->db->sql_query($sql);
 
 			$this->db->sql_transaction('commit');
+			$this->purge_cache();
 		}
 	}
 
@@ -637,6 +654,8 @@ class menu_operator
 				SET item_enabled = ' . $new_state . '
 				WHERE item_id = ' . (int) $item_id;
 			$this->db->sql_query($sql);
+
+			$this->purge_cache();
 
 			return $new_state;
 		}
@@ -710,12 +729,33 @@ class menu_operator
 	}
 
 	/**
+	 * Purge menu cached data.
+	 *
+	 * @return void
+	 */
+	public function purge_cache()
+	{
+		if ($this->cache !== null)
+		{
+			$this->cache->destroy('vinny_menu_items');
+			$this->cache->destroy('vinny_menu_reg_groups');
+		}
+	}
+
+	/**
 	 * Get base registered group IDs (e.g. REGISTERED and REGISTERED_COPPA).
 	 *
 	 * @return array
 	 */
 	public function get_registered_group_ids()
 	{
+		$ids = ($this->cache !== null) ? $this->cache->get('vinny_menu_reg_groups') : false;
+
+		if (is_array($ids))
+		{
+			return $ids;
+		}
+
 		$sql = 'SELECT group_id FROM ' . GROUPS_TABLE . "
 			WHERE group_name IN ('REGISTERED', 'REGISTERED_COPPA')";
 		$result = $this->db->sql_query($sql);
@@ -726,7 +766,14 @@ class menu_operator
 		}
 		$this->db->sql_freeresult($result);
 
-		return !empty($ids) ? $ids : [2, 3];
+		$ids = !empty($ids) ? $ids : [2, 3];
+
+		if ($this->cache !== null)
+		{
+			$this->cache->put('vinny_menu_reg_groups', $ids, 86400);
+		}
+
+		return $ids;
 	}
 
 	/**
@@ -736,26 +783,74 @@ class menu_operator
 	 */
 	public function get_visible_menu_tree()
 	{
-		$user_id = isset($this->user->data['user_id']) ? (int) $this->user->data['user_id'] : 0;
-		$primary_group = isset($this->user->data['group_id']) ? (int) $this->user->data['group_id'] : 0;
-		$user_groups = ($user_id > 0) ? $this->get_user_group_ids($user_id) : [];
+		$items = ($this->cache !== null) ? $this->cache->get('vinny_menu_items') : false;
 
-		if (empty($user_groups) && $primary_group > 0)
+		if (!is_array($items))
 		{
-			$user_groups = [$primary_group];
+			$sql = 'SELECT * FROM ' . $this->table_name . '
+				WHERE item_enabled = 1
+				ORDER BY item_order ASC, item_id ASC';
+			$result = $this->db->sql_query($sql);
+
+			$items = [];
+			while ($row = $this->db->sql_fetchrow($result))
+			{
+				$items[] = $row;
+			}
+			$this->db->sql_freeresult($result);
+
+			if ($this->cache !== null)
+			{
+				$this->cache->put('vinny_menu_items', $items);
+			}
 		}
 
-		$base_groups = $this->get_registered_group_ids();
+		if (empty($items))
+		{
+			return [];
+		}
 
-		$sql = 'SELECT * FROM ' . $this->table_name . '
-			WHERE item_enabled = 1
-			ORDER BY item_order ASC, item_id ASC';
-		$result = $this->db->sql_query($sql);
+		// Check if any enabled item has group restrictions configured
+		$has_group_restrictions = false;
+		foreach ($items as $item)
+		{
+			if (!empty($item['item_hide_groups']))
+			{
+				$has_group_restrictions = true;
+				break;
+			}
+		}
+
+		$user_id = isset($this->user->data['user_id']) ? (int) $this->user->data['user_id'] : 0;
+		$primary_group = isset($this->user->data['group_id']) ? (int) $this->user->data['group_id'] : 0;
+		$is_bot = !empty($this->user->data['is_bot']);
+		$is_anonymous = ($user_id <= 0 || (defined('ANONYMOUS') && $user_id === (int) ANONYMOUS) || $user_id === 1);
+
+		$user_groups = [];
+		$base_groups = [2, 3];
+
+		if ($has_group_restrictions)
+		{
+			$base_groups = $this->get_registered_group_ids();
+
+			if ($is_anonymous || $is_bot)
+			{
+				$user_groups = ($primary_group > 0) ? [$primary_group] : [];
+			}
+			else
+			{
+				$user_groups = ($user_id > 0) ? $this->get_user_group_ids($user_id) : [];
+				if (empty($user_groups) && $primary_group > 0)
+				{
+					$user_groups = [$primary_group];
+				}
+			}
+		}
 
 		$all_items = [];
-		while ($row = $this->db->sql_fetchrow($result))
+		foreach ($items as $row)
 		{
-			if (!empty($row['item_hide_groups']))
+			if ($has_group_restrictions && !empty($row['item_hide_groups']))
 			{
 				$hidden_groups = array_map('intval', explode(',', $row['item_hide_groups']));
 				if ($this->is_item_hidden($user_groups, $primary_group, $hidden_groups, $base_groups))
@@ -768,7 +863,6 @@ class menu_operator
 			$all_items[$row['item_id']] = $row;
 			$all_items[$row['item_id']]['children'] = [];
 		}
-		$this->db->sql_freeresult($result);
 
 		$tree = [];
 		foreach ($all_items as $id => $item)
@@ -800,6 +894,20 @@ class menu_operator
 			return [];
 		}
 
+		// Guests / Anonymous users do not have secondary groups in USER_GROUP_TABLE
+		if ((defined('ANONYMOUS') && $user_id === (int) ANONYMOUS) || $user_id === 1)
+		{
+			$primary = isset($this->user->data['group_id']) ? (int) $this->user->data['group_id'] : 1;
+			return [$primary];
+		}
+
+		$cache_key = 'vinny_menu_ug_' . $user_id;
+		$groups = ($this->cache !== null) ? $this->cache->get($cache_key) : false;
+		if (is_array($groups))
+		{
+			return $groups;
+		}
+
 		$groups = [];
 		$sql = 'SELECT group_id FROM ' . USER_GROUP_TABLE . '
 			WHERE user_id = ' . (int) $user_id . '
@@ -810,6 +918,11 @@ class menu_operator
 			$groups[] = (int) $row['group_id'];
 		}
 		$this->db->sql_freeresult($result);
+
+		if ($this->cache !== null)
+		{
+			$this->cache->put($cache_key, $groups, 3600);
+		}
 
 		return $groups;
 	}
