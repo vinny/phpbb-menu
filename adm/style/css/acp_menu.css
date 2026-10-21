@@ -111,3 +111,14 @@
 #vinny-menu-data {
 	display: none;
 }
+
+.menu-icon-preview {
+	margin-left: 8px;
+	font-size: 1.4em;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+.menu-icon-preview i {
+	vertical-align: middle;
+}

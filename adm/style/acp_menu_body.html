@@ -42,7 +42,12 @@
 			</dl>
 			<dl>
 				<dt><label for="item_icon">{{ lang('MENU_ITEM_ICON') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_ICON_EXPLAIN')|raw }}</span></dt>
-				<dd><input type="text" id="item_icon" name="item_icon" value="{{ ITEM_ICON|e('html_attr') }}" maxlength="100" placeholder="{{ lang('MENU_ITEM_ICON_PLACEHOLDER')|e('html_attr') }}" /></dd>
+				<dd>
+					<input type="text" id="item_icon" name="item_icon" value="{{ ITEM_ICON|e('html_attr') }}" maxlength="100" placeholder="{{ lang('MENU_ITEM_ICON_PLACEHOLDER')|e('html_attr') }}" />
+					<span class="menu-icon-preview">
+						<i class="icon fa {% if ITEM_ICON %}{{ ITEM_ICON }}{% endif %} fa-fw"{% if not ITEM_ICON %} style="display: none;"{% endif %}></i>
+					</span>
+				</dd>
 			</dl>
 			<dl>
 				<dt><label for="item_target">{{ lang('MENU_ITEM_TARGET') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_TARGET_EXPLAIN') }}</span></dt>
@@ -177,7 +182,12 @@
 			</dl>
 			<dl>
 				<dt><label for="item_icon">{{ lang('MENU_ITEM_ICON') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_ICON_EXPLAIN')|raw }}</span></dt>
-				<dd><input type="text" id="item_icon" name="item_icon" value="" maxlength="100" placeholder="{{ lang('MENU_ITEM_ICON_PLACEHOLDER')|e('html_attr') }}" /></dd>
+				<dd>
+					<input type="text" id="item_icon" name="item_icon" value="" maxlength="100" placeholder="{{ lang('MENU_ITEM_ICON_PLACEHOLDER')|e('html_attr') }}" />
+					<span class="menu-icon-preview">
+						<i class="icon fa fa-fw" style="display: none;"></i>
+					</span>
+				</dd>
 			</dl>
 			<dl>
 				<dt><label for="item_target">{{ lang('MENU_ITEM_TARGET') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MENU_ITEM_TARGET_EXPLAIN') }}</span></dt>
@@ -301,9 +311,10 @@
 	<div id="vinny-menu-data" data-reorder-url="{{ U_REORDER_AJAX|e('html_attr') }}"></div>
 
 	{% INCLUDEJS '@vinny_menu/js/Sortable.min.js' %}
-	{% INCLUDEJS '@vinny_menu/js/acp_menu.js' %}
 
 {% endif %}
+
+{% INCLUDEJS '@vinny_menu/js/acp_menu.js' %}
 
 <script>
 (function() {

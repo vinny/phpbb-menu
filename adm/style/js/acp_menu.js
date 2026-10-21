@@ -2,6 +2,48 @@
 	'use strict';
 
 	$(function() {
+		// Live icon preview
+		var $iconInput = $('input[name="item_icon"]');
+		if ($iconInput.length) {
+			var $previewContainer = $('.menu-icon-preview');
+			var $previewIcon = $previewContainer.find('i');
+
+			var updateIconPreview = function() {
+				var value = $iconInput.val().trim();
+
+				if (value === '') {
+					$previewIcon.hide();
+				} else {
+					var displayClass = value.toLowerCase().replace(/^fa\s+/, '').trim();
+					if (displayClass.indexOf('fa-') !== 0) {
+						displayClass = 'fa-' + displayClass;
+					}
+					$previewIcon.attr('class', 'icon fa ' + displayClass + ' fa-fw');
+					$previewIcon.css('display', 'inline-block');
+				}
+			};
+
+			$iconInput.on('input', updateIconPreview);
+
+			$iconInput.on('change', function() {
+				var value = $iconInput.val().trim();
+				if (value !== '') {
+					value = value.toLowerCase().replace(/^fa\s+/, '').trim();
+					if (value.indexOf('fa-') !== 0) {
+						value = 'fa-' + value;
+					}
+					$iconInput.val(value);
+				}
+				updateIconPreview();
+			});
+
+			$iconInput.closest('form').on('reset', function() {
+				setTimeout(updateIconPreview, 50);
+			});
+
+			updateIconPreview();
+		}
+
 		var $dataEl = $('#vinny-menu-data');
 		if (!$dataEl.length) {
 			return;
